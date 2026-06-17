@@ -10,7 +10,8 @@
     "test": "npx vitest run",
     "test:watch": "npx vitest",
     "test:coverage": "npx vitest run --coverage",
-    "dev:db": "npx prisma db push"
+    "dev:db": "npx prisma db push",
+    "test:tmp": "echo \"test\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
