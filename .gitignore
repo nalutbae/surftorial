@@ -11,9 +11,11 @@ dist/
 .env.local
 .env*.local
 
-# PGlite (dev database)
-prisma/dev-pglite/
-tech/prisma/dev-pglite/
+# SQLite dev database
+prisma/dev.db
+prisma/dev.db-journal
+tech/prisma/dev.db
+tech/prisma/dev.db-journal
 
 # OS
 .DS_Store
