@@ -1,4 +1,4 @@
 {
-  "buildCommand": "npm install && node ./node_modules/prisma/build/index.js generate && node ./node_modules/next/dist/bin/next build",
+  "buildCommand": "npm install && cp prisma/dev.db /tmp/dev.db && npx next build",
   "framework": "nextjs"
 }
