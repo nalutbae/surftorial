@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { PaymentType, PaymentStatus } from "@prisma/client";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { successResponse, errorResponse, validationErrorResponse } from "@/lib/utils/api";
 import { requireAuth } from "@/lib/utils/auth";
 import { paymentHistoryQuerySchema } from "@/lib/validations";
@@ -9,7 +9,6 @@ import { ZodError } from "zod";
 // GET /api/payments/history — User's payment history
 export async function GET(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireAuth();
     if ("error" in authResult) return authResult.error;
     const { profile } = authResult.data;

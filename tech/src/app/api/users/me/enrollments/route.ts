@@ -1,12 +1,11 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { successResponse, errorResponse } from "@/lib/utils/api";
 import { requireAuth } from "@/lib/utils/auth";
 
 // GET /api/users/me/enrollments — Current user's enrolled courses with progress
 export async function GET(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireAuth();
     if ("error" in authResult) return authResult.error;
     const { profile } = authResult.data;

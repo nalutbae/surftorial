@@ -1,12 +1,11 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { successResponse, notFoundResponse, errorResponse } from "@/lib/utils/api";
 import { requireAuth } from "@/lib/utils/auth";
 
 // POST /api/subscriptions/cancel — Cancel active subscription
 export async function POST() {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireAuth();
     if ("error" in authResult) return authResult.error;
     const { profile } = authResult.data;

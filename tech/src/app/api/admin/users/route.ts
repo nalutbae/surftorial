@@ -1,13 +1,12 @@
 import { NextRequest } from "next/server";
 import { Role } from "@prisma/client";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { successResponse, paginatedResponse, errorResponse } from "@/lib/utils/api";
 import { requireRole } from "@/lib/utils/auth";
 
 // GET /api/admin/users — Admin: list all users with stats
 export async function GET(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireRole("admin");
     if ("error" in authResult) return authResult.error;
 

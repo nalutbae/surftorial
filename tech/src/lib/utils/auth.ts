@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { unauthorizedResponse, forbiddenResponse } from "./api";
 import type { Profile } from "@prisma/client";
 import type { User } from "@supabase/supabase-js";
@@ -7,7 +7,6 @@ import type { User } from "@supabase/supabase-js";
 export async function getAuthUser(): Promise<User | null> {
   // DEV: Supabase 없이 가상 admin 사용자 반환
   if (process.env.NODE_ENV === "development") {
-    const prisma = await getPrisma();
     let admin = await prisma.profile.findFirst({
       where: { role: "admin", deletedAt: null },
     });
@@ -34,7 +33,6 @@ export async function getProfile(): Promise<{ user: User; profile: Profile } | n
   const user = await getAuthUser();
   if (!user) return null;
 
-  const prisma = await getPrisma();
   const profile = await prisma.profile.findUnique({
     where: { id: user.id },
   });

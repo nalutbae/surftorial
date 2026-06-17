@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { isValidUUID } from "@/lib/utils/id";
 import {
   successResponse,
@@ -18,7 +18,6 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; lessonId: string }> }
 ) {
   try {
-    const prisma = await getPrisma();
     const { id: courseId, lessonId } = await params;
 
     if (!isValidUUID(courseId) || !isValidUUID(lessonId)) {
@@ -86,7 +85,6 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string; lessonId: string }> }
 ) {
   try {
-    const prisma = await getPrisma();
     const { id: courseId, lessonId } = await params;
 
     if (!isValidUUID(courseId) || !isValidUUID(lessonId)) {

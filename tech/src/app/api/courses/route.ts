@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import {
   successResponse,
   paginatedResponse,
@@ -13,7 +13,6 @@ import { ZodError } from "zod";
 // GET /api/courses — Public: list published courses with filters
 export async function GET(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const { searchParams } = new URL(request.url);
     const query = courseFilterSchema.parse(Object.fromEntries(searchParams));
 
@@ -84,7 +83,6 @@ export async function GET(request: NextRequest) {
 // POST /api/courses — Instructor/Admin: create a new course
 export async function POST(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireRole("instructor");
     if ("error" in authResult) return authResult.error;
 

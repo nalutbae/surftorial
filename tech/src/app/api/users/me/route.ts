@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { successResponse, errorResponse, validationErrorResponse } from "@/lib/utils/api";
 import { requireAuth } from "@/lib/utils/auth";
 import { updateProfileSchema } from "@/lib/validations/user";
@@ -8,7 +8,6 @@ import { ZodError } from "zod";
 // GET /api/users/me — Current user's profile
 export async function GET() {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireAuth();
     if ("error" in authResult) return authResult.error;
     const { profile } = authResult.data;
@@ -30,7 +29,6 @@ export async function GET() {
 // PATCH /api/users/me — Update current user's profile
 export async function PATCH(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireAuth();
     if ("error" in authResult) return authResult.error;
     const { profile } = authResult.data;

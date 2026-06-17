@@ -1,6 +1,6 @@
 import { getProfile } from "@/lib/utils/auth";
 import { redirect } from "next/navigation";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { formatKRW, formatDate } from "@/lib/utils";
 
@@ -11,7 +11,6 @@ export default async function DashboardPage() {
   const { profile } = result;
 
   // Fetch user's enrollments
-  const prisma = await getPrisma();
   const enrollments = await prisma.enrollment.findMany({
     where: { userId: profile.id },
     include: {

@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { successResponse, errorResponse, validationErrorResponse, conflictResponse, notFoundResponse } from "@/lib/utils/api";
 import { requireAuth } from "@/lib/utils/auth";
 import { oneTimePaymentSchema } from "@/lib/validations/payment";
@@ -8,7 +8,6 @@ import { ZodError } from "zod";
 // POST /api/payments/one-time — Initiate a one-time course purchase
 export async function POST(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireAuth();
     if ("error" in authResult) return authResult.error;
     const { profile } = authResult.data;

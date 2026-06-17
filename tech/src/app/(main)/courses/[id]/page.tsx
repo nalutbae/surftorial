@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { isValidUUID } from "@/lib/utils/id";
 
 import CourseDetail from "@/components/courses/CourseDetail";
@@ -17,7 +17,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: "강좌를 찾을 수 없습니다 — Surftorial" };
   }
 
-  const prisma = await getPrisma();
   const course = await prisma.course.findFirst({
     where: { id, deletedAt: null },
     select: { title: true, description: true },
@@ -45,7 +44,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const prisma = await getPrisma();
 
   const course = await prisma.course.findFirst({
     where: { id, deletedAt: null },

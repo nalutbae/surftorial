@@ -1,6 +1,6 @@
 import { requireRole } from "@/lib/utils/auth";
 import { redirect } from "next/navigation";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { formatKRW } from "@/lib/utils";
 import { PublishToggleForm } from "./client";
@@ -23,7 +23,6 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
   const search = sp.search?.trim() || "";
   const page = Math.max(1, parseInt(sp.page || "1", 10) || 1);
 
-  const prisma = await getPrisma();
 
   // Build where clause
   const where: Record<string, unknown> = { deletedAt: null };

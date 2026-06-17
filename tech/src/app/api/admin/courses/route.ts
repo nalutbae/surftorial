@@ -1,12 +1,11 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { successResponse, paginatedResponse, errorResponse, forbiddenResponse } from "@/lib/utils/api";
 import { requireRole } from "@/lib/utils/auth";
 
 // GET /api/admin/courses — Admin: all courses including unpublished
 export async function GET(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireRole("admin");
     if ("error" in authResult) return authResult.error;
 

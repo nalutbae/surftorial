@@ -1,6 +1,6 @@
 import { requireRole } from "@/lib/utils/auth";
 import { redirect } from "next/navigation";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { RoleChangeForm, ToggleActiveForm, SearchForm } from "./client";
 
@@ -34,7 +34,6 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
   const roleFilter = sp.role || "all";
   const page = Math.max(1, parseInt(sp.page || "1", 10) || 1);
 
-  const prisma = await getPrisma();
 
   // Build where clause
   const where: Record<string, unknown> = {};

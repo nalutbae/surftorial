@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { isValidUUID } from "@/lib/utils/id";
 import {
   successResponse,
@@ -15,7 +15,6 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const prisma = await getPrisma();
     const { id: courseId } = await params;
 
     if (!isValidUUID(courseId)) {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { SKILL_LEVELS } from "@/lib/constants";
 import { formatKRW } from "@/lib/utils";
 
@@ -18,7 +18,6 @@ const GRADIENTS: Record<string, string> = {
 
 // ---------- Data fetching (runs on server) ----------
 async function fetchCourses() {
-  const prisma = await getPrisma();
 
   const courses = await prisma.course.findMany({
     where: { isPublished: true },

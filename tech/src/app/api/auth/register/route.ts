@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { registerSchema } from "@/lib/validations/user";
 import { successResponse, validationErrorResponse, conflictResponse, errorResponse } from "@/lib/utils/api";
@@ -7,7 +7,6 @@ import { ZodError } from "zod";
 
 export async function POST(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const body = await request.json();
     const data = registerSchema.parse(body);
 

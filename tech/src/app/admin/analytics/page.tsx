@@ -1,6 +1,6 @@
 import { requireRole } from "@/lib/utils/auth";
 import { redirect } from "next/navigation";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { formatKRW } from "@/lib/utils";
 
@@ -11,7 +11,6 @@ export default async function AdminAnalyticsPage() {
   }
 
   const { profile } = authResult.data;
-  const prisma = await getPrisma();
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);

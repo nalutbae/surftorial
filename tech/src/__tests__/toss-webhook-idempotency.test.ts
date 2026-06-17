@@ -21,6 +21,7 @@ const mockPrismaClient = {
 };
 
 vi.mock("@/lib/prisma", () => ({
+  default: mockPrismaClient,
   getPrisma: vi.fn().mockResolvedValue(mockPrismaClient),
 }));
 

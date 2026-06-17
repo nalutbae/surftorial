@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import {
   successResponse,
   errorResponse,
@@ -12,7 +12,6 @@ import { ZodError } from "zod";
 // GET /api/progress — Authenticated: get current user's progress across all enrolled courses
 export async function GET(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireAuth();
     if ("error" in authResult) return authResult.error;
     const { profile } = authResult.data;
@@ -130,7 +129,6 @@ export async function GET(request: NextRequest) {
 // PATCH /api/progress — Authenticated: upsert lesson progress (watch progress)
 export async function PATCH(request: NextRequest) {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireAuth();
     if ("error" in authResult) return authResult.error;
     const { profile } = authResult.data;

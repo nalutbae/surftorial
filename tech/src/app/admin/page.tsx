@@ -1,6 +1,6 @@
 import { requireRole } from "@/lib/utils/auth";
 import { redirect } from "next/navigation";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { formatKRW } from "@/lib/utils";
 
@@ -13,7 +13,6 @@ export default async function AdminDashboardPage() {
   const { profile } = authResult.data;
 
   // Fetch stats in parallel
-  const prisma = await getPrisma();
   const [
     totalUsers,
     totalCourses,

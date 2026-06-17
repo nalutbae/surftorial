@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { successResponse, errorResponse } from "@/lib/utils/api";
 import { verifyTossSignature } from "@/lib/payments/toss";
 
@@ -39,7 +39,6 @@ export async function POST(request: NextRequest) {
       return errorResponse("INVALID_BODY", "잘못된 JSON 형식입니다.", 400);
     }
 
-    const prisma = await getPrisma();
 
     const { eventType, data } = body as {
       eventType: string;

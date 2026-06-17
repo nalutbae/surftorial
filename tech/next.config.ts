@@ -1,7 +1,3 @@
 import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  serverExternalPackages: ["@electric-sql/pglite", "pglite-prisma-adapter"],
-};
-
+const nextConfig: NextConfig = {};
 export default nextConfig;

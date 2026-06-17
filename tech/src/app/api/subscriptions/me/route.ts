@@ -1,11 +1,10 @@
 import { successResponse, errorResponse } from "@/lib/utils/api";
 import { requireAuth } from "@/lib/utils/auth";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 // GET /api/subscriptions/me — Current user's subscription status
 export async function GET() {
   try {
-    const prisma = await getPrisma();
     const authResult = await requireAuth();
     if ("error" in authResult) return authResult.error;
     const { profile } = authResult.data;

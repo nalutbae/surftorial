@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getPrisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { isValidUUID } from "@/lib/utils/id";
 import { successResponse, notFoundResponse, errorResponse, validationErrorResponse, unauthorizedResponse } from "@/lib/utils/api";
 import { requireAuth } from "@/lib/utils/auth";
@@ -14,7 +14,6 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const prisma = await getPrisma();
     const { id: lessonId } = await params;
 
     if (!isValidUUID(lessonId)) {
@@ -92,7 +91,6 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const prisma = await getPrisma();
     const { id: lessonId } = await params;
 
     if (!isValidUUID(lessonId)) {
