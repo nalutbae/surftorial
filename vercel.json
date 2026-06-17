@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd tech && pnpm install --frozen-lockfile && pnpm build",
+  "buildCommand": "cd tech && pnpm install --frozen-lockfile && pnpm exec prisma generate && pnpm build",
   "outputDirectory": "tech/.next",
   "installCommand": "cd tech && corepack enable && pnpm install --frozen-lockfile",
   "framework": "nextjs"
