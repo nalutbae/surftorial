@@ -1,6 +1,5 @@
 import { PrismaClient } from "@/generated/prisma";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
-import { ensureDbSync } from "@/lib/db-setup";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -28,11 +27,6 @@ function createPrismaClient(): PrismaClient {
 }
 
 // ─────────────────────────── eager init ──────────────────────────────
-// Vercel: DB가 없으므로 먼저 push + seed 실행
-if (process.env.VERCEL || process.env.VERCEL_ENV) {
-  ensureDbSync();
-}
-
 const prisma: PrismaClient = createPrismaClient();
 
 // ─────────────────────────── exports ─────────────────────────────────
