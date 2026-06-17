@@ -1,4 +1,4 @@
 {
-  "buildCommand": "npm install && ls -la prisma/ && cp prisma/dev.db /tmp/dev.db && npx next build",
+  "buildCommand": "cd tech && npm install && cp prisma/dev.db /tmp/dev.db && npx next build",
   "framework": "nextjs"
 }
