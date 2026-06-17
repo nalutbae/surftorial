@@ -1,10 +1,12 @@
 import { NextRequest } from "next/server";
-import { PaymentType, PaymentStatus } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { successResponse, errorResponse, validationErrorResponse } from "@/lib/utils/api";
 import { requireAuth } from "@/lib/utils/auth";
 import { paymentHistoryQuerySchema } from "@/lib/validations";
 import { ZodError } from "zod";
+
+type PaymentType = "one_time" | "subscription";
+type PaymentStatus = "pending" | "completed" | "failed" | "refunded";
 
 // GET /api/payments/history — User's payment history
 export async function GET(request: NextRequest) {

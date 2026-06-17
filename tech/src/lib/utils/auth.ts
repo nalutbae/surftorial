@@ -1,8 +1,21 @@
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma";
 import { unauthorizedResponse, forbiddenResponse } from "./api";
-import type { Profile } from "@prisma/client";
 import type { User } from "@supabase/supabase-js";
+
+// Prisma 7 + SQLite doesn't export enums/models as types — define locally
+type Profile = {
+  id: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  bio: string | null;
+  skillLevel: string;
+  role: string;
+  joinDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+};
 
 export async function getAuthUser(): Promise<User | null> {
   // DEV: Supabase 없이 가상 admin 사용자 반환
