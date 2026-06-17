@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surftorial — 관리자 페이지 와이어프레임</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ocean-50:#F0F9FF;--ocean-100:#E0F2FE;--ocean-200:#BAE6FD;--ocean-300:#7DD3FC;
+  --ocean-400:#38BDF8;--ocean-500:#0EA5E9;--ocean-600:#0284C7;--ocean-700:#0369A1;
+  --ocean-800:#075985;--ocean-900:#0C4A6E;--ocean-950:#082F49;
+  --sunset-50:#FFF7ED;--sunset-100:#FFEDD5;--sunset-200:#FED7AA;--sunset-300:#FDBA74;
+  --sunset-400:#FB923C;--sunset-500:#F97316;--sunset-600:#EA580C;--sunset-700:#C2410C;
+  --slate-50:#F8FAFC;--slate-100:#F1F5F9;--slate-200:#E2E8F0;--slate-300:#CBD5E1;
+  --slate-400:#94A3B8;--slate-500:#64748B;--slate-600:#475569;--slate-700:#334155;
+  --slate-800:#1E293B;--slate-900:#0F172A;
+  --success:#10B981;--success-light:#D1FAE5;--warning:#F59E0B;--warning-light:#FEF3C7;
+  --error:#EF4444;--error-light:#FEE2E2;--info:#0EA5E9;--info-light:#E0F2FE;
+  --radius-sm:6px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-2xl:24px;--radius-full:9999px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow-md:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -2px rgba(0,0,0,.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -4px rgba(0,0,0,.05);
+  --font-display:'Inter',sans-serif;--font-body:'Pretendard','Inter',sans-serif;
+  --transition:250ms cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);color:var(--slate-900);background:var(--slate-50);line-height:1.7}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+
+/* ===== ADMIN LAYOUT ===== */
+.admin{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+
+/* ===== ADMIN SIDEBAR ===== */
+.admin-sidebar{background:var(--slate-900);color:#fff;padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto}
+.admin-brand{padding:0 24px 24px;border-bottom:1px solid var(--slate-800);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.admin-brand-logo{width:32px;height:32px;background:var(--ocean-500);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.admin-brand-name{font-family:var(--font-display);font-weight:700;font-size:1.125rem}
+.admin-brand-badge{font-size:.625rem;font-weight:600;background:var(--sunset-500);padding:2px 8px;border-radius:var(--radius-full);margin-left:4px}
+.admin-nav-section{margin-bottom:20px}
+.admin-nav-label{font-size:.6875rem;font-weight:600;color:var(--slate-500);text-transform:uppercase;letter-spacing:.08em;padding:0 24px;margin-bottom:8px}
+.admin-nav-link{display:flex;align-items:center;gap:10px;padding:10px 24px;font-size:.875rem;color:var(--slate-400);transition:all var(--transition);cursor:pointer;border-left:3px solid transparent}
+.admin-nav-link:hover{background:var(--slate-800);color:var(--slate-200)}
+.admin-nav-link.active{background:rgba(14,165,233,.1);color:var(--ocean-400);border-left-color:var(--ocean-500)}
+.admin-nav-link svg{width:18px;height:18px;flex-shrink:0}
+.admin-nav-link .count{margin-left:auto;background:var(--sunset-500);color:#fff;font-size:.6875rem;font-weight:600;padding:2px 8px;border-radius:var(--radius-full)}
+
+/* ===== ADMIN MAIN ===== */
+.admin-main{padding:32px;overflow-y:auto}
+
+/* ===== ADMIN HEADER ===== */
+.admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
+.admin-title{font-family:var(--font-display);font-size:1.75rem;font-weight:700}
+.admin-header-actions{display:flex;gap:12px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:var(--radius-md);font-weight:600;transition:all var(--transition);gap:8px}
+.btn-primary{background:var(--ocean-700);color:#fff;padding:10px 20px;font-size:.875rem}
+.btn-primary:hover{background:var(--ocean-800)}
+.btn-sunset{background:var(--sunset-500);color:#fff;padding:10px 20px;font-size:.875rem}
+.btn-sunset:hover{background:var(--sunset-600)}
+.btn-outline{background:transparent;border:1.5px solid var(--slate-200);color:var(--slate-700);padding:10px 20px;font-size:.875rem}
+.btn-outline:hover{border-color:var(--ocean-300);color:var(--ocean-700)}
+.btn-danger{background:var(--error);color:#fff;padding:8px 16px;font-size:.8125rem}
+.btn-danger:hover{background:#DC2626}
+.btn-sm{padding:6px 14px;font-size:.8125rem}
+.btn-ghost{background:transparent;color:var(--slate-500);padding:6px 12px;font-size:.8125rem;border:none}
+.btn-ghost:hover{background:var(--slate-100);color:var(--slate-700)}
+
+/* ===== STAT CARDS ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.stat-card{background:#fff;border-radius:var(--radius-xl);padding:20px;border:1px solid var(--slate-200)}
+.stat-label{font-size:.8125rem;color:var(--slate-500);margin-bottom:4px}
+.stat-value{font-family:var(--font-display);font-size:1.75rem;font-weight:800;margin-bottom:2px}
+.stat-change{font-size:.75rem;font-weight:600}
+.stat-change.up{color:var(--success)}
+.stat-change.down{color:var(--error)}
+
+/* ===== TABLE ===== */
+.table-card{background:#fff;border-radius:var(--radius-xl);border:1px solid var(--slate-200);overflow:hidden;margin-bottom:32px}
+.table-toolbar{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--slate-100)}
+.table-toolbar-title{font-family:var(--font-display);font-size:1.0625rem;font-weight:600}
+.table-toolbar-actions{display:flex;gap:8px;align-items:center}
+.search-input{padding:8px 14px 8px 36px;border:1.5px solid var(--slate-200);border-radius:var(--radius-md);font-size:.875rem;font-family:var(--font-body);width:240px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 20 20' fill='%2394A3B8'%3E%3Cpath fill-rule='evenodd' d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z' clip-rule='evenodd'/%3E%3C/svg%3E") 12px center no-repeat;background-size:16px}
+.search-input:focus{outline:none;border-color:var(--ocean-500)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:12px 16px;font-size:.75rem;font-weight:600;color:var(--slate-500);text-transform:uppercase;letter-spacing:.05em;background:var(--slate-50);border-bottom:1px solid var(--slate-200)}
+td{padding:14px 16px;font-size:.875rem;border-bottom:1px solid var(--slate-100);vertical-align:middle}
+tr:hover td{background:var(--slate-50)}
+.course-cell{display:flex;align-items:center;gap:12px}
+.course-thumb{width:48px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:.875rem;flex-shrink:0}
+.course-name{font-weight:600;font-size:.875rem}
+.course-cat{font-size:.75rem;color:var(--slate-400)}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:var(--radius-full);font-size:.6875rem;font-weight:600}
+.badge-active{background:var(--success-light);color:#059669}
+.badge-draft{background:var(--slate-100);color:var(--slate-500)}
+.badge-archived{background:var(--error-light);color:var(--error)}
+.badge-ocean{background:var(--ocean-50);color:var(--ocean-700)}
+.badge-sunset{background:var(--sunset-50);color:var(--sunset-600)}
+.actions-cell{display:flex;gap:4px}
+
+/* ===== PAGINATION ===== */
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-top:1px solid var(--slate-100)}
+.pagination-info{font-size:.8125rem;color:var(--slate-400)}
+.pagination-btns{display:flex;gap:4px}
+.page-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid var(--slate-200);border-radius:var(--radius-sm);background:#fff;font-size:.8125rem;color:var(--slate-600);cursor:pointer;transition:all var(--transition)}
+.page-btn:hover{border-color:var(--ocean-300);color:var(--ocean-700)}
+.page-btn.active{background:var(--ocean-700);color:#fff;border-color:var(--ocean-700)}
+
+/* ===== USER MANAGEMENT TABLE ===== */
+.user-cell{display:flex;align-items:center;gap:12px}
+.user-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:#fff;flex-shrink:0}
+.user-name{font-weight:600;font-size:.875rem}
+.user-email{font-size:.75rem;color:var(--slate-400)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1023px){
+  .admin{grid-template-columns:1fr}
+  .admin-sidebar{display:none}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:767px){
+  .stats-grid{grid-template-columns:1fr}
+  .admin-header{flex-direction:column;gap:16px;align-items:flex-start}
+  .table-toolbar{flex-direction:column;gap:12px;align-items:flex-start}
+  .search-input{width:100%}
+  .admin-main{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="admin">
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <div class="admin-brand-logo">🏄</div>
+      <span class="admin-brand-name">Surftorial</span>
+      <span class="admin-brand-badge">Admin</span>
+    </div>
+
+    <div class="admin-nav-section">
+      <div class="admin-nav-label">개요</div>
+      <div class="admin-nav-link active">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/></svg>
+        대시보드
+      </div>
+    </div>
+
+    <div class="admin-nav-section">
+      <div class="admin-nav-label">콘텐츠</div>
+      <div class="admin-nav-link">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
+        강좌 관리
+        <span class="count">12</span>
+      </div>
+      <div class="admin-nav-link">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm3 2h6v4H7V5zm8 8v2H5v-2h10z" clip-rule="evenodd"/></svg>
+        영상 관리
+      </div>
+      <div class="admin-nav-link">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v7a1 1 0 102 0V8z" clip-rule="evenodd"/></svg>
+        분석 통계
+      </div>
+    </div>
+
+    <div class="admin-nav-section">
+      <div class="admin-nav-label">사용자</div>
+      <div class="admin-nav-link">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17.65A2 2 0 0111 19H3a2 2 0 01-2-2c0-3.87 3.13-7 7-7 1.87 0 3.57.73 4.83 1.93A5.976 5.976 0 0012 17c0 .56.08 1.1.23 1.6l.7.05zM17 19a2 2 0 01-2-2c0-2.21-1.79-4-4-4-.5 0-.98.07-1.42.2A7.97 7.97 0 008 17c0 1.1.45 2.1 1.17 2.83L17 19z"/></svg>
+        회원 관리
+        <span class="count">1,248</span>
+      </div>
+      <div class="admin-nav-link">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"/></svg>
+        인스트럭터
+      </div>
+    </div>
+
+    <div class="admin-nav-section">
+      <div class="admin-nav-label">운영</div>
+      <div class="admin-nav-link">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V14h-.5A1.5 1.5 0 002 12.5v-1A1.5 1.5 0 013.5 10H4V8H3.5A1.5 1.5 0 012 6.5v-1A3.5 3.5 0 015.5 2h9A3.5 3.5 0 0118 5.5v1a1.5 1.5 0 01-1.5 1.5H16v2h.5a1.5 1.5 0 011.5 1.5v1a1.5 1.5 0 01-1.5 1.5H16v2a2 2 0 002-2V6a2 2 0 00-2-2H4z" clip-rule="evenodd"/></svg>
+        결제 내역
+      </div>
+      <div class="admin-nav-link">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7h10M5 10h6" clip-rule="evenodd"/></svg>
+        공지사항
+      </div>
+      <div class="admin-nav-link">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+        설정
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- HEADER -->
+    <div class="admin-header">
+      <h1 class="admin-title">강좌 관리</h1>
+      <div class="admin-header-actions">
+        <button class="btn btn-outline">📤 내보내기</button>
+        <button class="btn btn-primary">+ 새 강좌 만들기</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">전체 강좌</div>
+        <div class="stat-value">12</div>
+        <div class="stat-change up">↑ 2 이번 달</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">활성 강좌</div>
+        <div class="stat-value" style="color:var(--success)">9</div>
+        <div class="stat-change up">75%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">총 수강생</div>
+        <div class="stat-value">1,248</div>
+        <div class="stat-change up">↑ 156 이번 달</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">월 매출</div>
+        <div class="stat-value" style="color:var(--ocean-700)">₩3.2M</div>
+        <div class="stat-change up">↑ 12%</div>
+      </div>
+    </div>
+
+    <!-- COURSE TABLE -->
+    <div class="table-card">
+      <div class="table-toolbar">
+        <div class="table-toolbar-title">전체 강좌</div>
+        <div class="table-toolbar-actions">
+          <input type="text" class="search-input" placeholder="강좌 검색...">
+          <select class="btn btn-outline btn-sm" style="appearance:auto;padding-right:24px">
+            <option>전체 상태</option>
+            <option>활성</option>
+            <option>임시저장</option>
+            <option>보관</option>
+          </select>
+          <select class="btn btn-outline btn-sm" style="appearance:auto;padding-right:24px">
+            <option>전체 레벨</option>
+            <option>입문</option>
+            <option>초급</option>
+            <option>중급</option>
+          </select>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px"><input type="checkbox"></th>
+            <th>강좌명</th>
+            <th>레벨</th>
+            <th>수강생</th>
+            <th>매출</th>
+            <th>상태</th>
+            <th>업데이트</th>
+            <th>액션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb" style="background:linear-gradient(135deg,var(--ocean-200),var(--ocean-500))">🏄</div>
+                <div>
+                  <div class="course-name">서핑 첫걸음 — 바다 시작하기</div>
+                  <div class="course-cat">서핑 기초 · 32강</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge badge-ocean">입문</span></td>
+            <td>482</td>
+            <td>₩1.4M</td>
+            <td><span class="badge badge-active">활성</span></td>
+            <td style="color:var(--slate-400);font-size:.8125rem">2026.06.01</td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn btn-ghost btn-sm">수정</button>
+                <button class="btn btn-ghost btn-sm">통계</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb" style="background:linear-gradient(135deg,var(--sunset-200),var(--sunset-500))">🏋️</div>
+                <div>
+                  <div class="course-name">팝업 마스터 — 확실한 일어서기</div>
+                  <div class="course-cat">팝업 · 24강</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge badge-sunset">초급</span></td>
+            <td>328</td>
+            <td>₩1.1M</td>
+            <td><span class="badge badge-active">활성</span></td>
+            <td style="color:var(--slate-400);font-size:.8125rem">2026.05.28</td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn btn-ghost btn-sm">수정</button>
+                <button class="btn btn-ghost btn-sm">통계</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb" style="background:linear-gradient(135deg,#C4B5FD,#7C3AED)">🌊</div>
+                <div>
+                  <div class="course-name">턴 기술 — 파도를 읽고 지배하기</div>
+                  <div class="course-cat">턴 기술 · 40강</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge" style="background:#F3E8FF;color:#7C3AED">중급</span></td>
+            <td>186</td>
+            <td>₩0.7M</td>
+            <td><span class="badge badge-active">활성</span></td>
+            <td style="color:var(--slate-400);font-size:.8125rem">2026.05.15</td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn btn-ghost btn-sm">수정</button>
+                <button class="btn btn-ghost btn-sm">통계</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb" style="background:linear-gradient(135deg,var(--ocean-100),var(--ocean-300))">🛡️</div>
+                <div>
+                  <div class="course-name">서핑 안전 가이드 — 바다에서 안전하게</div>
+                  <div class="course-cat">안전 · 16강</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge badge-ocean">입문</span></td>
+            <td>252</td>
+            <td style="color:var(--success);font-weight:600">무료</td>
+            <td><span class="badge badge-active">활성</span></td>
+            <td style="color:var(--slate-400);font-size:.8125rem">2026.04.20</td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn btn-ghost btn-sm">수정</button>
+                <button class="btn btn-ghost btn-sm">통계</button>
+              </div>
+            </td>
+          </tr>
+          <tr style="background:var(--slate-50)">
+            <td><input type="checkbox"></td>
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb" style="background:linear-gradient(135deg,var(--slate-100),var(--slate-300)">🧘</div>
+                <div>
+                  <div class="course-name" style="color:var(--slate-400)">서핑 요가 — 유연성과 밸런스</div>
+                  <div class="course-cat">요가 · 12강</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge badge-sunset">초급</span></td>
+            <td style="color:var(--slate-400)">—</td>
+            <td style="color:var(--slate-400)">—</td>
+            <td><span class="badge badge-draft">임시저장</span></td>
+            <td style="color:var(--slate-400);font-size:.8125rem">2026.06.10</td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn btn-ghost btn-sm">수정</button>
+                <button class="btn btn-danger btn-sm">삭제</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <div class="pagination-info">1-5 of 12개 강좌</div>
+        <div class="pagination-btns">
+          <button class="page-btn">‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER MANAGEMENT TABLE -->
+    <div class="admin-header" style="margin-top:16px">
+      <h2 class="admin-title" style="font-size:1.25rem">최근 가입 회원</h2>
+      <button class="btn btn-outline btn-sm">전체 보기 →</button>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>회원</th>
+            <th>가입일</th>
+            <th>수강 강좌</th>
+            <th>결제 금액</th>
+            <th>상태</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar" style="background:linear-gradient(135deg,var(--ocean-400),var(--ocean-700))">김</div>
+                <div>
+                  <div class="user-name">김하늘</div>
+                  <div class="user-email">haenul@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td style="font-size:.8125rem;color:var(--slate-400)">2026.06.15</td>
+            <td>2</td>
+            <td>₩68,000</td>
+            <td><span class="badge badge-active">활성</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar" style="background:linear-gradient(135deg,var(--sunset-400),var(--sunset-600))">이</div>
+                <div>
+                  <div class="user-name">이서윤</div>
+                  <div class="user-email">seoyun@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td style="font-size:.8125rem;color:var(--slate-400)">2026.06.14</td>
+            <td>1</td>
+            <td>₩29,000</td>
+            <td><span class="badge badge-active">활성</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar" style="background:linear-gradient(135deg,#A78BFA,#7C3AED)">박</div>
+                <div>
+                  <div class="user-name">박민수</div>
+                  <div class="user-email">minsu@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td style="font-size:.8125rem;color:var(--slate-400)">2026.06.12</td>
+            <td>3</td>
+            <td>₩117,000</td>
+            <td><span class="badge badge-active">활성</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar" style="background:linear-gradient(135deg,var(--success-light),var(--success))">최</div>
+                <div>
+                  <div class="user-name">최수진</div>
+                  <div class="user-email">sujin@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td style="font-size:.8125rem;color:var(--slate-400)">2026.06.10</td>
+            <td>1</td>
+            <td style="color:var(--success);font-weight:600">무료</td>
+            <td><span class="badge badge-active">활성</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

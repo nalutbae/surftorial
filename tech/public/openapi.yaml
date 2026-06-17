@@ -1,0 +1,1047 @@
+openapi: 3.0.3
+info:
+  title: Surftorial API
+  description: 서핑 온라인 강좌 플랫폼 Surftorial의 REST API 명세
+  version: 1.0.0
+  contact:
+    name: Surftorial Team
+    url: https://surftorial.com
+
+servers:
+  - url: https://surftorial.com/api
+    description: Production
+  - url: http://localhost:3000/api
+    description: Local Development
+
+security:
+  - cookieAuth: []
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+    description: 인증 (회원가입, 세션)
+  - name: Courses
+    description: 강의 CRUD, 검색, 필터
+  - name: Lessons
+    description: 레슨 관리
+  - name: Enrollments
+    description: 수강 등록
+  - name: Progress
+    description: 학습 진도
+  - name: Reviews
+    description: 강의 리뷰
+  - name: Payments
+    description: 결제 (일회성, 구독)
+  - name: Subscriptions
+    description: 구독 관리
+  - name: Webhooks
+    description: 토스페이먼츠 웹훅
+  - name: Users
+    description: 사용자 프로필
+  - name: Admin
+    description: 관리자 기능
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sb-access-token
+      description: Supabase Auth 세션 쿠키
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Supabase JWT (Phase 2)
+
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              example: 요청 본문 유효성 검사 실패
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+
+    SuccessResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          description: 응답 데이터
+    PaginatedResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          description: 데이터 목록
+        meta:
+          type: object
+          properties:
+            total:
+              type: integer
+            page:
+              type: integer
+            per_page:
+              type: integer
+            total_pages:
+              type: integer
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        price:
+          type: integer
+        skill_level:
+          type: string
+          enum: [beginner, intermediate, advanced, expert]
+        is_published:
+          type: boolean
+        instructor:
+          $ref: '#/components/schemas/InstructorBrief'
+        category:
+          $ref: '#/components/schemas/Category'
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lesson'
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+        ratingAvg:
+          type: number
+        reviewCount:
+          type: integer
+
+    InstructorBrief:
+      type: object
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        avatarUrl:
+          type: string
+          nullable: true
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        durationSec:
+          type: integer
+          nullable: true
+        isFreePreview:
+          type: boolean
+        sortOrder:
+          type: integer
+        hasAccess:
+          type: boolean
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        user:
+          $ref: '#/components/schemas/InstructorBrief'
+
+    Profile:
+      type: object
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          nullable: true
+        bio:
+          type: string
+          nullable: true
+        skillLevel:
+          type: string
+          enum: [beginner, intermediate, advanced, expert]
+        role:
+          type: string
+          enum: [student, instructor, admin]
+
+    Progress:
+      type: object
+      properties:
+        id:
+          type: string
+        lessonId:
+          type: string
+        isCompleted:
+          type: boolean
+        watchedSec:
+          type: integer
+        lastPosition:
+          type: integer
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+        paymentType:
+          type: string
+          enum: [one_time, subscription]
+        amount:
+          type: integer
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [pending, completed, failed, refunded]
+        tossOrderId:
+          type: string
+          nullable: true
+        paidAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+        planType:
+          type: string
+          enum: [monthly, yearly]
+        tier:
+          type: string
+          enum: [starter, premium]
+        status:
+          type: string
+          enum: [active, canceled, expired, past_due]
+        currentPeriodStart:
+          type: string
+          format: date-time
+        currentPeriodEnd:
+          type: string
+          format: date-time
+
+    Enrollment:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        courseId:
+          type: string
+        source:
+          type: string
+        status:
+          type: string
+          enum: [active, completed, refunded]
+        enrolledAt:
+          type: string
+          format: date-time
+        progress:
+          type: object
+          properties:
+            completedLessons:
+              type: integer
+            totalLessons:
+              type: integer
+            percent:
+              type: integer
+
+paths:
+  # ===== AUTH =====
+  /api/auth/session:
+    get:
+      tags: [Auth]
+      summary: 현재 세션 조회
+      description: 현재 로그인된 사용자의 세션과 프로필 정보를 반환합니다. 미로그인 시 user=null, profile=null.
+      responses:
+        '200':
+          description: 세션 정보
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          user:
+                            nullable: true
+                            type: object
+                            properties:
+                              id: { type: string }
+                              email: { type: string }
+                              created_at: { type: string }
+                          profile:
+                            nullable: true
+                            $ref: '#/components/schemas/Profile'
+
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: 프로필 등록
+      description: Supabase Auth로 인증된 사용자의 프로필을 Prisma DB에 생성합니다.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, display_name]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                display_name:
+                  type: string
+                  minLength: 2
+                  maxLength: 50
+                phone:
+                  type: string
+                  pattern: '^01[016789]\d{7,8}$'
+                role:
+                  type: string
+                  enum: [student, instructor]
+      responses:
+        '201':
+          description: 프로필 생성 성공
+        '401':
+          $ref: '#/components/schemas/Error'
+        '409':
+          $ref: '#/components/schemas/Error'
+
+  # ===== COURSES =====
+  /api/courses:
+    get:
+      tags: [Courses]
+      summary: 강의 목록 조회 (Public)
+      description: 공개된 강의 목록을 필터/검색/정렬/페이지네이션으로 조회합니다.
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [basics, popup, turn, safety, seasonal, fitness]
+        - name: skill_level
+          in: query
+          schema:
+            type: string
+            enum: [beginner, intermediate, advanced, expert]
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [latest, popular, price_asc, price_desc]
+            default: latest
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 강의 목록
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+    post:
+      tags: [Courses]
+      summary: 새 강의 생성 (Instructor/Admin)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, category]
+              properties:
+                title:
+                  type: string
+                  minLength: 2
+                  maxLength: 200
+                description:
+                  type: string
+                category:
+                  type: string
+                  enum: [basics, popup, turn, safety, seasonal, fitness]
+                skill_level:
+                  type: string
+                  enum: [beginner, intermediate, advanced, expert]
+                  default: beginner
+                price:
+                  type: integer
+                  minimum: 0
+                  default: 0
+                thumbnail_url:
+                  type: string
+                  format: uri
+                is_published:
+                  type: boolean
+                  default: false
+      responses:
+        '201':
+          description: 강의 생성 성공
+        '401':
+          $ref: '#/components/schemas/Error'
+        '403':
+          $ref: '#/components/schemas/Error'
+
+  /api/courses/{id}:
+    get:
+      tags: [Courses]
+      summary: 강의 상세 조회 (Public)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 강의 상세 (레슨 목록, 리뷰 포함)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Course'
+        '404':
+          $ref: '#/components/schemas/Error'
+    patch:
+      tags: [Courses]
+      summary: 강의 수정 (Instructor/Owner/Admin)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/paths/~1api~1courses/post/requestBody/content/application~1json/schema'
+      responses:
+        '200':
+          description: 강의 수정 성공
+        '403':
+          $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Courses]
+      summary: 강의 소프트 삭제 (Instructor/Admin)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 삭제 성공 (deleted=true)
+
+  # ===== ENROLLMENTS =====
+  /api/courses/{id}/enroll:
+    post:
+      tags: [Enrollments]
+      summary: 강의 수강 등록
+      description: "수강 등록 성공. 무료 강의는 즉시 등록되며, 유료 강의는 402 Payment Required 응답이 반환됩니다."
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: 수강 등록 성공
+        '402':
+          description: 결제 필요
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: 이미 등록됨
+
+  # ===== LESSONS =====
+  /api/courses/{id}/lessons:
+    get:
+      tags: [Lessons]
+      summary: 강의의 레슨 목록 조회
+      description: 미수강자는 프리뷰 레슨만 접근 가능
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 레슨 목록
+    post:
+      tags: [Lessons]
+      summary: 레슨 추가 (Instructor/Admin)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, slug]
+              properties:
+                title:
+                  type: string
+                slug:
+                  type: string
+                  pattern: '^[a-z0-9-]+$'
+                description:
+                  type: string
+                stream_id:
+                  type: string
+                duration_sec:
+                  type: integer
+                sort_order:
+                  type: integer
+                is_free_preview:
+                  type: boolean
+      responses:
+        '201':
+          description: 레슨 생성 성공
+
+  /api/courses/{id}/lessons/{lessonId}:
+    patch:
+      tags: [Lessons]
+      summary: 레슨 수정 (Instructor/Admin)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 수정 성공
+    delete:
+      tags: [Lessons]
+      summary: 레슨 소프트 삭제 (Instructor/Admin)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 삭제 성공
+
+  # ===== PROGRESS =====
+  /api/lessons/{id}/progress:
+    get:
+      tags: [Progress]
+      summary: 레슨 진도 및 비디오 재생 URL 조회
+      description: 수강 중인 경우 비디오 signed URL도 함께 반환
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 진도 + 비디오 URL
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          progress:
+                            $ref: '#/components/schemas/Progress'
+                          videoUrl:
+                            type: string
+                            nullable: true
+        '403':
+          $ref: '#/components/schemas/Error'
+    patch:
+      tags: [Progress]
+      summary: 시청 진도 업데이트
+      description: watched_seconds 기준 90% 이상 시청 시 자동 완료 처리
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [watched_seconds]
+              properties:
+                watched_seconds:
+                  type: integer
+                  minimum: 0
+                last_position:
+                  type: integer
+                  minimum: 0
+      responses:
+        '200':
+          description: 진도 업데이트 성공
+
+  /api/progress:
+    get:
+      tags: [Progress]
+      summary: 전체 학습 진도 조회
+      description: course_id 쿼리 파라미터가 있으면 특정 강의 진도, 없으면 전체 수강 강의 진도 반환
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: course_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 진도 현황
+    patch:
+      tags: [Progress]
+      summary: 레슨 진도 업서트 (legacy)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [lessonId, watchedSec]
+              properties:
+                lessonId:
+                  type: string
+                  format: uuid
+                watchedSec:
+                  type: integer
+                lastPosition:
+                  type: integer
+      responses:
+        '200':
+          description: 진도 업데이트 성공
+
+  # ===== REVIEWS =====
+  /api/courses/{id}/reviews:
+    get:
+      tags: [Reviews]
+      summary: 강의 리뷰 목록 조회 (Public)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 리뷰 목록 + 평균 평점
+    post:
+      tags: [Reviews]
+      summary: 강의 리뷰 작성 (수강생만)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rating]
+              properties:
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                comment:
+                  type: string
+                  maxLength: 1000
+      responses:
+        '201':
+          description: 리뷰 작성 성공
+        '403':
+          description: 수강 중인 강의만 리뷰 가능
+
+  # ===== PAYMENTS =====
+  /api/payments/one-time:
+    post:
+      tags: [Payments]
+      summary: 일회성 강의 결제 요청
+      description: 결제 정보를 생성하고 orderId를 반환. 프론트엔드는 이를 토스페이먼츠 SDK에 전달.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [course_id]
+              properties:
+                course_id:
+                  type: string
+                  format: uuid
+      responses:
+        '201':
+          description: 결제 생성 성공 (paymentId, orderId, amount 반환)
+
+  /api/payments/subscribe:
+    post:
+      tags: [Payments]
+      summary: 구독 결제 요청
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [plan, billing_cycle]
+              properties:
+                plan:
+                  type: string
+                  enum: [starter, premium]
+                billing_cycle:
+                  type: string
+                  enum: [monthly, yearly]
+      responses:
+        '201':
+          description: 구독 생성 성공
+        '409':
+          description: 이미 활성 구독 존재
+
+  /api/payments/history:
+    get:
+      tags: [Payments]
+      summary: 결제 내역 조회
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [one_time, subscription]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, completed, failed, refunded]
+      responses:
+        '200':
+          description: 결제 내역 목록
+
+  # ===== SUBSCRIPTIONS =====
+  /api/subscriptions/me:
+    get:
+      tags: [Subscriptions]
+      summary: 내 구독 상태 조회
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 구독 정보 (없으면 null)
+
+  /api/subscriptions/cancel:
+    post:
+      tags: [Subscriptions]
+      summary: 구독 취소
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 구독 취소 성공
+        '404':
+          description: 활성 구독 없음
+
+  # ===== WEBHOOKS =====
+  /api/webhooks/toss:
+    post:
+      tags: [Webhooks]
+      summary: 토스페이먼츠 웹훅 수신
+      description: PAYMENT_CONFIRM, SUBSCRIPTION_BILLING, REFUND 이벤트 처리
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventType, data]
+              properties:
+                eventType:
+                  type: string
+                  enum: [PAYMENT_CONFIRM, SUBSCRIPTION_BILLING, REFUND]
+                data:
+                  type: object
+      responses:
+        '200':
+          description: 웹훅 처리 완료
+
+  # ===== USERS =====
+  /api/users/me:
+    get:
+      tags: [Users]
+      summary: 내 프로필 조회
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 프로필 정보
+    patch:
+      tags: [Users]
+      summary: 프로필 수정
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                display_name:
+                  type: string
+                  minLength: 2
+                  maxLength: 50
+                bio:
+                  type: string
+                  maxLength: 500
+                skill_level:
+                  type: string
+                  enum: [beginner, intermediate, advanced, expert]
+                avatar_url:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: 수정 성공
+
+  /api/users/me/enrollments:
+    get:
+      tags: [Users]
+      summary: 내 수강 목록 조회
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 수강 목록 + 진도율
+
+  # ===== ADMIN =====
+  /api/admin/analytics:
+    get:
+      tags: [Admin]
+      summary: 관리자 대시보드 분석 데이터
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 사용자/강의/수강/매출 통계
+        '403':
+          $ref: '#/components/schemas/Error'
+
+  /api/admin/courses:
+    get:
+      tags: [Admin]
+      summary: 관리자 - 전체 강의 목록 (미공개 포함)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [published, unpublished, all]
+      responses:
+        '200':
+          description: 전체 강의 목록
+
+  /api/admin/users:
+    get:
+      tags: [Admin]
+      summary: 관리자 - 전체 사용자 목록
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [student, instructor, admin, all]
+      responses:
+        '200':
+          description: 전체 사용자 목록

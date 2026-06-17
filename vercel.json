@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd tech && pnpm install --frozen-lockfile && pnpm build",
+  "outputDirectory": "tech/.next",
+  "installCommand": "cd tech && pnpm install --frozen-lockfile",
+  "framework": "nextjs",
+  "rootDirectory": "tech"
+}

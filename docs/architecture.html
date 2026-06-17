@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surftorial Architecture Diagram</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: #020617;
+      min-height: 100vh;
+      padding: 2rem;
+      color: white;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .header { margin-bottom: 2rem; }
+    .header-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+    .pulse-dot {
+      width: 12px; height: 12px; background: #22d3ee;
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; }
+    .subtitle { color: #94a3b8; font-size: 0.875rem; margin-left: 1.75rem; }
+    .diagram-container {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 1rem;
+      border: 1px solid #1e293b;
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+    svg { width: 100%; min-width: 1000px; display: block; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 0.75rem;
+      border: 1px solid #1e293b;
+      padding: 1.25rem;
+    }
+    .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .card-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .card-dot.cyan { background: #22d3ee; }
+    .card-dot.emerald { background: #34d399; }
+    .card-dot.violet { background: #a78bfa; }
+    .card-dot.amber { background: #fbbf24; }
+    .card-dot.rose { background: #fb7185; }
+    .card h3 { font-size: 0.875rem; font-weight: 600; }
+    .card ul { list-style: none; color: #94a3b8; font-size: 0.75rem; }
+    .card li { margin-bottom: 0.375rem; }
+    .footer { text-align: center; margin-top: 1.5rem; color: #475569; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-row">
+        <div class="pulse-dot"></div>
+        <h1>Surftorial System Architecture</h1>
+      </div>
+      <p class="subtitle">MVP Architecture — Next.js + Supabase + Cloudflare Stream</p>
+    </div>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1100 680">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+          </marker>
+          <marker id="arrow-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee" />
+          </marker>
+          <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#34d399" />
+          </marker>
+          <marker id="arrow-violet" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa" />
+          </marker>
+          <marker id="arrow-rose" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#fb7185" />
+          </marker>
+          <marker id="arrow-amber" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#fbbf24" />
+          </marker>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        <!-- ===== Vercel Boundary ===== -->
+        <rect x="230" y="130" width="520" height="340" rx="12" fill="rgba(251, 191, 36, 0.03)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="242" y="148" fill="#fbbf24" font-size="10" font-weight="600">Vercel (Edge Network)</text>
+
+        <!-- ===== Supabase Boundary ===== -->
+        <rect x="540" y="170" width="200" height="280" rx="10" fill="rgba(167, 139, 250, 0.05)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="550" y="188" fill="#a78bfa" font-size="9" font-weight="600">Supabase Platform</text>
+
+        <!-- ===== USERS (External) ===== -->
+        <rect x="30" y="240" width="130" height="50" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="95" y="260" fill="white" font-size="11" font-weight="600" text-anchor="middle">Users</text>
+        <text x="95" y="278" fill="#94a3b8" font-size="9" text-anchor="middle">Browser / Mobile</text>
+
+        <!-- ===== STRIPE (External) ===== -->
+        <rect x="820" y="240" width="130" height="50" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="885" y="260" fill="white" font-size="11" font-weight="600" text-anchor="middle">Stripe</text>
+        <text x="885" y="278" fill="#94a3b8" font-size="9" text-anchor="middle">Payment (KRW)</text>
+
+        <!-- ===== Cloudflare DNS/CDN ===== -->
+        <rect x="270" y="30" width="440" height="50" rx="6" fill="rgba(120, 53, 15, 0.25)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="490" y="50" fill="white" font-size="12" font-weight="600" text-anchor="middle">Cloudflare — DNS, CDN, DDoS Protection</text>
+        <text x="490" y="68" fill="#94a3b8" font-size="9" text-anchor="middle">surftorial.com</text>
+
+        <!-- ===== Next.js Frontend ===== -->
+        <rect x="250" y="200" width="260" height="70" rx="8" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="380" y="225" fill="white" font-size="12" font-weight="600" text-anchor="middle">Next.js App Router</text>
+        <text x="380" y="243" fill="#94a3b8" font-size="9" text-anchor="middle">Server Components + Client Components</text>
+        <text x="380" y="258" fill="#22d3ee" font-size="8" text-anchor="middle">TypeScript · Tailwind · shadcn/ui · Zustand</text>
+
+        <!-- ===== Next.js API Routes ===== -->
+        <rect x="250" y="310" width="260" height="70" rx="8" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="380" y="335" fill="white" font-size="12" font-weight="600" text-anchor="middle">API Routes + Server Actions</text>
+        <text x="380" y="353" fill="#94a3b8" font-size="9" text-anchor="middle">REST API · Stripe Webhooks</text>
+        <text x="380" y="368" fill="#34d399" font-size="8" text-anchor="middle">Prisma ORM · Zod Validation</text>
+
+        <!-- ===== Supabase Auth ===== -->
+        <rect x="555" y="195" width="170" height="50" rx="6" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="640" y="215" fill="white" font-size="11" font-weight="600" text-anchor="middle">Supabase Auth</text>
+        <text x="640" y="233" fill="#94a3b8" font-size="9" text-anchor="middle">Google · Kakao · Email</text>
+
+        <!-- ===== PostgreSQL ===== -->
+        <rect x="555" y="270" width="170" height="65" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="640" y="292" fill="white" font-size="11" font-weight="600" text-anchor="middle">PostgreSQL 16</text>
+        <text x="640" y="310" fill="#94a3b8" font-size="9" text-anchor="middle">Row Level Security</text>
+        <text x="640" y="324" fill="#a78bfa" font-size="8" text-anchor="middle">Prisma Migrations</text>
+
+        <!-- ===== Supabase Storage ===== -->
+        <rect x="555" y="360" width="170" height="50" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="640" y="380" fill="white" font-size="11" font-weight="600" text-anchor="middle">Supabase Storage</text>
+        <text x="640" y="398" fill="#94a3b8" font-size="9" text-anchor="middle">Thumbnails · Assets</text>
+
+        <!-- ===== Cloudflare Stream ===== -->
+        <rect x="810" y="310" width="160" height="70" rx="8" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="890" y="335" fill="white" font-size="12" font-weight="600" text-anchor="middle">Cloudflare Stream</text>
+        <text x="890" y="353" fill="#94a3b8" font-size="9" text-anchor="middle">VOD Encoding + Delivery</text>
+        <text x="890" y="368" fill="#fbbf24" font-size="8" text-anchor="middle">HLS/DASH · Global CDN</text>
+
+        <!-- ===== Vidstack Player (in frontend) ===== -->
+        <rect x="810" y="195" width="160" height="50" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="890" y="215" fill="white" font-size="11" font-weight="600" text-anchor="middle">Vidstack Player</text>
+        <text x="890" y="233" fill="#94a3b8" font-size="9" text-anchor="middle">Web Component</text>
+
+        <!-- ===== GitHub Actions ===== -->
+        <rect x="270" y="430" width="440" height="45" rx="6" fill="rgba(120, 53, 15, 0.25)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="490" y="450" fill="white" font-size="11" font-weight="600" text-anchor="middle">GitHub Actions — CI/CD</text>
+        <text x="490" y="465" fill="#94a3b8" font-size="9" text-anchor="middle">Lint → Test → Deploy to Vercel</text>
+
+        <!-- ===== Sentry ===== -->
+        <rect x="820" y="430" width="150" height="45" rx="6" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="895" y="448" fill="white" font-size="10" font-weight="600" text-anchor="middle">Sentry</text>
+        <text x="895" y="464" fill="#94a3b8" font-size="9" text-anchor="middle">Error Monitoring</text>
+
+        <!-- ===== ARROWS ===== -->
+
+        <!-- User → Cloudflare (DNS) -->
+        <line x1="160" y1="265" x2="268" y2="55" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+        <!-- Cloudflare → Vercel (frontend) -->
+        <line x1="490" y1="80" x2="380" y2="198" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <text x="440" y="145" fill="#94a3b8" font-size="8" text-anchor="middle">HTTPS</text>
+
+        <!-- Frontend → API Routes -->
+        <line x1="380" y1="270" x2="380" y2="308" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+        <!-- API Routes → Supabase Auth -->
+        <line x1="510" y1="345" x2="553" y2="220" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <text x="535" y="288" fill="#94a3b8" font-size="8">Auth</text>
+
+        <!-- API Routes → PostgreSQL -->
+        <line x1="510" y1="345" x2="553" y2="302" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow-violet)"/>
+        <text x="520" y="320" fill="#94a3b8" font-size="8">Prisma</text>
+
+        <!-- Frontend → Vidstack Player -->
+        <line x1="510" y1="225" x2="808" y2="220" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+        <!-- Vidstack → Cloudflare Stream (HLS) -->
+        <line x1="890" y1="245" x2="890" y2="308" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+        <text x="904" y="280" fill="#94a3b8" font-size="8">HLS</text>
+
+        <!-- Frontend → Stripe (Checkout redirect) -->
+        <line x1="510" y1="220" x2="818" y2="260" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowhead)"/>
+        <text x="670" y="225" fill="#94a3b8" font-size="8">Redirect</text>
+
+        <!-- Stripe → API Routes (Webhook callback) -->
+        <path d="M 885 290 L 885 380 Q 885 400 865 400 L 512 400 L 512 382" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowhead)"/>
+        <text x="700" y="415" fill="#94a3b8" font-size="8">Webhook</text>
+
+        <!-- Auth → Frontend (JWT session) -->
+        <line x1="555" y1="220" x2="512" y2="225" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow-rose)"/>
+        <text x="525" y="216" fill="#fb7185" font-size="7">JWT</text>
+
+        <!-- API Routes → Storage (thumbnails) -->
+        <line x1="510" y1="360" x2="553" y2="385" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow-violet)"/>
+
+        <!-- Supabase Storage → Frontend (public URLs) -->
+        <path d="M 555 380 Q 530 380 530 250 L 512 250" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-violet)"/>
+
+        <!-- GitHub Actions → Vercel (deploy) -->
+        <line x1="490" y1="430" x2="490" y2="382" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+        <text x="502" y="410" fill="#94a3b8" font-size="8">Deploy</text>
+
+        <!-- ===== LEGEND ===== -->
+        <text x="820" y="510" fill="white" font-size="10" font-weight="600">Legend</text>
+
+        <rect x="820" y="522" width="16" height="10" rx="2" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1"/>
+        <text x="842" y="530" fill="#94a3b8" font-size="8">Frontend</text>
+
+        <rect x="820" y="538" width="16" height="10" rx="2" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1"/>
+        <text x="842" y="546" fill="#94a3b8" font-size="8">Backend / API</text>
+
+        <rect x="820" y="554" width="16" height="10" rx="2" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1"/>
+        <text x="842" y="562" fill="#94a3b8" font-size="8">Cloud / CDN</text>
+
+        <rect x="920" y="522" width="16" height="10" rx="2" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1"/>
+        <text x="942" y="530" fill="#94a3b8" font-size="8">Database</text>
+
+        <rect x="920" y="538" width="16" height="10" rx="2" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1"/>
+        <text x="942" y="546" fill="#94a3b8" font-size="8">Security / Auth</text>
+
+        <rect x="920" y="554" width="16" height="10" rx="2" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1"/>
+        <text x="942" y="562" fill="#94a3b8" font-size="8">External Service</text>
+
+        <line x1="820" y1="580" x2="836" y2="580" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <text x="842" y="583" fill="#94a3b8" font-size="8">Data / Request</text>
+
+        <line x1="920" y1="580" x2="936" y2="580" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="942" y="583" fill="#94a3b8" font-size="8">Auth / Callback</text>
+      </svg>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot cyan"></div>
+          <h3>Frontend Layer</h3>
+        </div>
+        <ul>
+          <li>• Next.js 15 App Router (RSC)</li>
+          <li>• Tailwind CSS + shadcn/ui</li>
+          <li>• Zustand state management</li>
+          <li>• Vidstack video player (HLS)</li>
+          <li>• React Hook Form + Zod</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot emerald"></div>
+          <h3>Backend & Data Layer</h3>
+        </div>
+        <ul>
+          <li>• Next.js API Routes + Server Actions</li>
+          <li>• Prisma ORM over PostgreSQL 16</li>
+          <li>• Supabase Auth (OAuth + Email)</li>
+          <li>• Row Level Security policies</li>
+          <li>• Stripe Checkout + Webhooks</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot amber"></div>
+          <h3>Infrastructure & Delivery</h3>
+        </div>
+        <ul>
+          <li>• Vercel (Edge deployment)</li>
+          <li>• Cloudflare Stream (VOD)</li>
+          <li>• Cloudflare DNS + CDN</li>
+          <li>• GitHub Actions CI/CD</li>
+          <li>• Sentry error monitoring</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">
+      Surftorial MVP Architecture • v1.0.0 • Designed for 1-person development
+    </p>
+  </div>
+</body>
+</html>

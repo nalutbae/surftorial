@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surftorial — 내 학습 대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ocean-600: #0C4A6E; --ocean-500: #0369A1; --ocean-400: #0EA5E9; --ocean-300: #7DD3FC;
+    --sunset-500: #F97316; --sunset-400: #FB923C; --sunset-100: #FFF7ED;
+    --slate-900: #0F172A; --slate-700: #334155; --slate-400: #94A3B8; --slate-200: #E2E8F0;
+    --sand-50: #F8FAFC; --white: #FFFFFF;
+    --success: #10B981; --warning: #F59E0B; --error: #EF4444;
+    --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-full: 9999px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--slate-900); background: var(--sand-50);
+    line-height: 1.7; -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--slate-200);
+    padding: 0 24px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--ocean-500); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-logo .logo-wave { width: 32px; height: 24px; background: var(--ocean-500); border-radius: 0 0 50% 50%; position: relative; overflow: hidden; }
+  .nav-logo .logo-wave::after { content: ''; position: absolute; top: 4px; left: 10px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--sunset-500); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: var(--slate-700); text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
+  .nav-links a.active { color: var(--ocean-500); font-weight: 600; }
+  .nav-avatar {
+    width: 36px; height: 36px; background: var(--ocean-300); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.875rem; font-weight: 600; color: var(--ocean-600); cursor: pointer;
+  }
+
+  /* LAYOUT */
+  .dashboard-container {
+    margin-top: 64px; max-width: 1200px;
+    margin-left: auto; margin-right: auto;
+    padding: 32px 24px 64px;
+  }
+
+  /* WELCOME */
+  .welcome-section {
+    background: linear-gradient(135deg, var(--ocean-600) 0%, var(--ocean-500) 60%, var(--ocean-400) 100%);
+    border-radius: var(--radius-xl); padding: 40px 32px;
+    color: var(--white); margin-bottom: 32px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;
+  }
+  .welcome-text h1 { font-family: 'Inter', sans-serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
+  .welcome-text p { opacity: 0.9; font-size: 1rem; }
+  .welcome-cta {
+    background: var(--sunset-500); color: var(--white);
+    padding: 14px 28px; border-radius: var(--radius-md);
+    font-weight: 700; font-size: 1rem; text-decoration: none;
+    transition: background 0.2s; display: inline-flex; align-items: center; gap: 8px;
+    min-height: 48px;
+  }
+  .welcome-cta:hover { background: var(--sunset-400); }
+
+  /* STATS GRID */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    padding: 24px; box-shadow: var(--shadow-sm);
+    text-align: center;
+  }
+  .stat-card .stat-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .stat-card .stat-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.75rem; font-weight: 800; color: var(--slate-900);
+  }
+  .stat-card .stat-label { font-size: 0.8125rem; color: var(--slate-400); margin-top: 4px; }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .section-header h2 { font-size: 1.25rem; font-weight: 700; }
+  .section-header a { color: var(--ocean-500); text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
+
+  /* CONTINUE COURSES */
+  .continue-cards {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px; margin-bottom: 40px;
+  }
+  .continue-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s; cursor: pointer;
+    text-decoration: none; color: inherit; display: block;
+  }
+  .continue-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .continue-card-thumb {
+    height: 120px; display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; position: relative;
+  }
+  .continue-card-body { padding: 16px; }
+  .continue-card-body h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+  .progress-bar-container {
+    background: var(--slate-200); border-radius: var(--radius-full); height: 8px;
+    margin-bottom: 8px; overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%; border-radius: var(--radius-full); transition: width 0.3s;
+  }
+  .progress-bar-ocean { background: linear-gradient(90deg, var(--ocean-500), var(--ocean-400)); }
+  .progress-bar-sunset { background: linear-gradient(90deg, var(--sunset-500), var(--sunset-400)); }
+  .progress-bar-success { background: linear-gradient(90deg, var(--success), #34D399); }
+  .progress-meta {
+    display: flex; justify-content: space-between; font-size: 0.8125rem; color: var(--slate-400);
+  }
+
+  /* BADGE */
+  .badge { display: inline-block; padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+  .badge-ocean { background: var(--ocean-300); color: var(--ocean-600); }
+  .badge-sunset { background: var(--sunset-100); color: var(--sunset-500); }
+
+  /* RECENT ACTIVITY */
+  .activity-list { margin-bottom: 40px; }
+  .activity-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 20px; background: var(--white);
+    border-radius: var(--radius-md); margin-bottom: 8px;
+    box-shadow: var(--shadow-sm);
+  }
+  .activity-item:hover { box-shadow: var(--shadow-md); }
+  .activity-icon {
+    width: 44px; height: 44px; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; flex-shrink: 0;
+  }
+  .activity-icon-ocean { background: rgba(3,105,161,0.1); }
+  .activity-icon-sunset { background: rgba(249,115,22,0.1); }
+  .activity-icon-success { background: rgba(16,185,129,0.1); }
+  .activity-info { flex: 1; }
+  .activity-info h4 { font-size: 0.9375rem; font-weight: 600; margin-bottom: 2px; }
+  .activity-info p { font-size: 0.8125rem; color: var(--slate-400); }
+  .activity-time { font-size: 0.75rem; color: var(--slate-400); white-space: nowrap; }
+
+  /* RECOMMENDED */
+  .recommended-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px; margin-bottom: 40px;
+  }
+  .rec-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    overflow: hidden; box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s, transform 0.2s; cursor: pointer;
+    text-decoration: none; color: inherit; display: block;
+  }
+  .rec-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .rec-card-thumb {
+    height: 140px; display: flex; align-items: center; justify-content: center; font-size: 2rem;
+  }
+  .rec-card-body { padding: 14px; }
+  .rec-card-body .badge { margin-bottom: 6px; }
+  .rec-card-body h3 { font-size: 0.9375rem; font-weight: 600; margin-bottom: 6px; line-height: 1.4; }
+  .rec-card-body .price {
+    font-family: 'Inter', sans-serif; font-weight: 700;
+    color: var(--sunset-500); font-size: 0.9375rem;
+  }
+
+  /* ACHIEVEMENTS */
+  .achievements-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px; margin-bottom: 40px;
+  }
+  .achievement-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    padding: 20px; text-align: center; box-shadow: var(--shadow-sm);
+  }
+  .achievement-card .achievement-emoji { font-size: 2rem; margin-bottom: 8px; }
+  .achievement-card h4 { font-size: 0.8125rem; font-weight: 600; margin-bottom: 4px; }
+  .achievement-card p { font-size: 0.75rem; color: var(--slate-400); }
+  .achievement-card.locked { opacity: 0.4; }
+
+  /* RESPONSIVE */
+  @media (max-width: 767px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .continue-cards { grid-template-columns: 1fr; }
+    .recommended-grid { grid-template-columns: repeat(2, 1fr); }
+    .welcome-section { padding: 28px 20px; }
+    .welcome-text h1 { font-size: 1.375rem; }
+    .achievements-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="landing.html" class="nav-logo"><span class="logo-wave"></span> Surftorial</a>
+  <div class="nav-links">
+    <a href="course-list.html">강의</a>
+    <a href="#">커뮤니티</a>
+    <a href="#" class="active">내 학습</a>
+  </div>
+  <div class="nav-avatar">서</div>
+</nav>
+
+<div class="dashboard-container">
+  <!-- WELCOME -->
+  <div class="welcome-section">
+    <div class="welcome-text">
+      <h1>반가워요, 서연님! 🏄‍♀️</h1>
+      <p>지금 학습 중인 강의를 계속해볼까요?</p>
+    </div>
+    <a href="#" class="welcome-cta">▶ 이어서 학습하기</a>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📚</div>
+      <div class="stat-value">3</div>
+      <div class="stat-label">수강 중</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-value">1</div>
+      <div class="stat-label">완료</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⏱</div>
+      <div class="stat-value">14.5h</div>
+      <div class="stat-label">총 학습 시간</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔥</div>
+      <div class="stat-value">7일</div>
+      <div class="stat-label">연속 학습</div>
+    </div>
+  </div>
+
+  <!-- CONTINUE LEARNING -->
+  <div class="section-header">
+    <h2>📚 학습 중인 강의</h2>
+    <a href="#">전체 보기 →</a>
+  </div>
+  <div class="continue-cards">
+    <a href="course-detail.html" class="continue-card">
+      <div class="continue-card-thumb" style="background: linear-gradient(135deg, #0EA5E9, #7DD3FC);">🏄</div>
+      <div class="continue-card-body">
+        <h3>팝업 마스터: 보드 위에 서는 법</h3>
+        <div class="progress-bar-container"><div class="progress-bar progress-bar-ocean" style="width:65%;"></div></div>
+        <div class="progress-meta">
+          <span>16/24강 완료</span>
+          <span>65%</span>
+        </div>
+      </div>
+    </a>
+    <a href="course-detail.html" class="continue-card">
+      <div class="continue-card-thumb" style="background: linear-gradient(135deg, #0C4A6E, #0369A1);">🌅</div>
+      <div class="continue-card-body">
+        <h3>턴 기술: 파도를 가르며 나아가기</h3>
+        <div class="progress-bar-container"><div class="progress-bar progress-bar-sunset" style="width:30%;"></div></div>
+        <div class="progress-meta">
+          <span>10/32강 완료</span>
+          <span>30%</span>
+        </div>
+      </div>
+    </a>
+    <a href="course-detail.html" class="continue-card">
+      <div class="continue-card-thumb" style="background: linear-gradient(135deg, #10B981, #34D399);">🛡️</div>
+      <div class="continue-card-body">
+        <h3>서핑 안전: 바다에서 나를 지키는 법</h3>
+        <div class="progress-bar-container"><div class="progress-bar progress-bar-success" style="width:100%;"></div></div>
+        <div class="progress-meta">
+          <span>8/8강 완료</span>
+          <span style="color:var(--success); font-weight:600;">완료! ✅</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- RECENT ACTIVITY -->
+  <div class="section-header">
+    <h2>🕐 최근 활동</h2>
+  </div>
+  <div class="activity-list">
+    <div class="activity-item">
+      <div class="activity-icon activity-icon-ocean">🎬</div>
+      <div class="activity-info">
+        <h4>팝업 마스터 — 16강 "실전 팝업: 처음부터 끝까지" 완료</h4>
+        <p>시청 시간 18:05</p>
+      </div>
+      <span class="activity-time">2시간 전</span>
+    </div>
+    <div class="activity-item">
+      <div class="activity-icon activity-icon-sunset">📝</div>
+      <div class="activity-info">
+        <h4>턴 기술 — 10강 "프론트사이드 턴 기초" 완료</h4>
+        <p>시청 시간 14:22</p>
+      </div>
+      <span class="activity-time">어제</span>
+    </div>
+    <div class="activity-item">
+      <div class="activity-icon activity-icon-success">🏆</div>
+      <div class="activity-info">
+        <h4>서핑 안전 — 수료증 발급 완료!</h4>
+        <p>전체 8강 수강 완료</p>
+      </div>
+      <span class="activity-time">3일 전</span>
+    </div>
+  </div>
+
+  <!-- RECOMMENDED -->
+  <div class="section-header">
+    <h2>🎯 추천 강의</h2>
+    <a href="course-list.html">더 보기 →</a>
+  </div>
+  <div class="recommended-grid">
+    <a href="#" class="rec-card">
+      <div class="rec-card-thumb" style="background:linear-gradient(135deg,#F97316,#FB923C);">🏆</div>
+      <div class="rec-card-body">
+        <span class="badge badge-sunset">고급</span>
+        <h3>컷백 & 리버스</h3>
+        <div class="price">₩59,000</div>
+      </div>
+    </a>
+    <a href="#" class="rec-card">
+      <div class="rec-card-thumb" style="background:linear-gradient(135deg,#0EA5E9,#7DD3FC);">🌊</div>
+      <div class="rec-card-body">
+        <span class="badge badge-ocean">입문</span>
+        <h3>바다 읽기: 조류와 파도</h3>
+        <div class="price">₩24,000</div>
+      </div>
+    </a>
+    <a href="#" class="rec-card">
+      <div class="rec-card-thumb" style="background:linear-gradient(135deg,#0369A1,#0EA5E9);">💪</div>
+      <div class="rec-card-body">
+        <span class="badge badge-ocean">초급</span>
+        <h3>서핑 피지컬: 핵심 근력</h3>
+        <div class="price">₩19,000</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div class="section-header">
+    <h2>🏅 달성 현황</h2>
+  </div>
+  <div class="achievements-grid">
+    <div class="achievement-card">
+      <div class="achievement-emoji">🏄</div>
+      <h4>첫 서핑</h4>
+      <p>첫 강의 완료</p>
+    </div>
+    <div class="achievement-card">
+      <div class="achievement-emoji">🔥</div>
+      <h4>7일 연속</h4>
+      <p>7일 연속 학습</p>
+    </div>
+    <div class="achievement-card">
+      <div class="achievement-emoji">🛡️</div>
+      <h4>안전 수호</h4>
+      <p>안전 과정 완료</p>
+    </div>
+    <div class="achievement-card locked">
+      <div class="achievement-emoji">⭐</div>
+      <h4>팝업 마스터</h4>
+      <p>팝업 강의 100%</p>
+    </div>
+    <div class="achievement-card locked">
+      <div class="achievement-emoji">🌊</div>
+      <h4>웨이브 라이더</h4>
+      <p>5개 강의 완료</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

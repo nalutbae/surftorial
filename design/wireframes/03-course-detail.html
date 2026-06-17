@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surftorial — 강좌 상세 와이어프레임</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ocean-50:#F0F9FF;--ocean-100:#E0F2FE;--ocean-200:#BAE6FD;--ocean-300:#7DD3FC;
+  --ocean-400:#38BDF8;--ocean-500:#0EA5E9;--ocean-600:#0284C7;--ocean-700:#0369A1;
+  --ocean-800:#075985;--ocean-900:#0C4A6E;--ocean-950:#082F49;
+  --sunset-50:#FFF7ED;--sunset-100:#FFEDD5;--sunset-200:#FED7AA;--sunset-300:#FDBA74;
+  --sunset-400:#FB923C;--sunset-500:#F97316;--sunset-600:#EA580C;--sunset-700:#C2410C;
+  --slate-50:#F8FAFC;--slate-100:#F1F5F9;--slate-200:#E2E8F0;--slate-300:#CBD5E1;
+  --slate-400:#94A3B8;--slate-500:#64748B;--slate-600:#475569;--slate-700:#334155;
+  --slate-800:#1E293B;--slate-900:#0F172A;
+  --success:#10B981;--warning:#F59E0B;--error:#EF4444;
+  --radius-sm:6px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-2xl:24px;--radius-full:9999px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow-md:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -2px rgba(0,0,0,.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -4px rgba(0,0,0,.05);
+  --font-display:'Inter',sans-serif;--font-body:'Pretendard','Inter',sans-serif;
+  --transition:250ms cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);color:var(--slate-900);background:var(--slate-50);line-height:1.7}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+
+.nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-200)}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{font-family:var(--font-display);font-weight:800;font-size:1.5rem;color:var(--ocean-700);display:flex;align-items:center;gap:8px}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{font-size:.875rem;font-weight:500;color:var(--slate-600)}
+.nav-links a:hover{color:var(--ocean-700)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:var(--radius-md);font-weight:600;transition:all var(--transition);gap:8px}
+.btn-primary{background:var(--ocean-700);color:#fff;padding:14px 28px;font-size:1rem}
+.btn-primary:hover{background:var(--ocean-800);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.btn-sunset{background:var(--sunset-500);color:#fff;padding:14px 28px;font-size:1rem}
+.btn-sunset:hover{background:var(--sunset-600);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.btn-outline{background:transparent;border:2px solid var(--slate-200);color:var(--slate-700);padding:12px 24px;font-size:.9375rem}
+.btn-outline:hover{border-color:var(--ocean-300);color:var(--ocean-700)}
+.btn-sm{padding:8px 16px;font-size:.8125rem}
+.btn-icon{width:44px;height:44px;padding:0;border-radius:var(--radius-md);background:#fff;border:1.5px solid var(--slate-200);color:var(--slate-500);display:inline-flex;align-items:center;justify-content:center}
+.btn-icon:hover{border-color:var(--ocean-300);color:var(--ocean-700)}
+
+/* ===== LAYOUT ===== */
+.page{max-width:1280px;margin:0 auto;padding:32px 24px 80px}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8125rem;color:var(--slate-400);margin-bottom:24px}
+.breadcrumb a{color:var(--slate-500);transition:color var(--transition)}
+.breadcrumb a:hover{color:var(--ocean-700)}
+.breadcrumb .sep{margin:0 4px}
+
+.detail-layout{display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start}
+
+/* ===== VIDEO PLAYER ===== */
+.video-section{margin-bottom:24px}
+.video-player{position:relative;aspect-ratio:16/9;background:var(--slate-900);border-radius:var(--radius-xl);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.video-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 50%);z-index:1;pointer-events:none}
+.video-controls{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:16px 20px;display:flex;align-items:center;gap:12px}
+.video-progress{flex:1;height:4px;background:rgba(255,255,255,.3);border-radius:2px;position:relative;cursor:pointer}
+.video-progress-fill{position:absolute;left:0;top:0;height:100%;background:var(--sunset-500);border-radius:2px;width:35%}
+.video-progress-handle{position:absolute;top:50%;right:-6px;width:12px;height:12px;background:#fff;border-radius:50%;transform:translateY(-50%);box-shadow:var(--shadow-sm)}
+.video-time{font-size:.8125rem;color:rgba(255,255,255,.8);font-family:var(--font-display);font-variant-numeric:tabular-nums}
+.video-btn{background:none;border:none;color:#fff;opacity:.8;cursor:pointer;padding:4px;transition:opacity var(--transition)}
+.video-btn:hover{opacity:1}
+.video-play-center{width:80px;height:80px;background:var(--sunset-500);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 0 0 8px rgba(249,115,22,.25);transition:transform var(--transition)}
+.video-play-center:hover{transform:scale(1.08)}
+.video-play-center svg{width:32px;height:32px;margin-left:4px}
+
+/* ===== COURSE INFO ===== */
+.course-header{margin-bottom:32px}
+.course-badges{display:flex;gap:8px;margin-bottom:12px}
+.course-badge{padding:4px 12px;border-radius:var(--radius-full);font-size:.75rem;font-weight:600}
+.badge-level{background:var(--ocean-100);color:var(--ocean-700)}
+.badge-category{background:var(--sunset-100);color:var(--sunset-600)}
+.badge-hot{background:var(--sunset-500);color:#fff}
+.course-title{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,.5rem,1.875rem);font-weight:700;line-height:1.3;margin-bottom:12px}
+.course-meta-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:.875rem;color:var(--slate-500)}
+.course-meta-row .meta-item{display:flex;align-items:center;gap:4px}
+.course-meta-row .stars{color:var(--warning)}
+.course-desc{margin-top:16px;font-size:1rem;color:var(--slate-600);line-height:1.7}
+
+/* ===== TABS ===== */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--slate-200);margin-bottom:24px}
+.tab{padding:12px 20px;font-size:.9375rem;font-weight:500;color:var(--slate-400);border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;transition:all var(--transition)}
+.tab:hover{color:var(--slate-600)}
+.tab.active{color:var(--ocean-700);border-bottom-color:var(--ocean-700)}
+
+/* ===== CURRICULUM ===== */
+.curriculum-section{display:none}
+.curriculum-section.active{display:block}
+.module{margin-bottom:16px}
+.module-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:var(--slate-50);border:1px solid var(--slate-200);border-radius:var(--radius-lg);cursor:pointer;transition:all var(--transition)}
+.module-header:hover{background:var(--ocean-50);border-color:var(--ocean-200)}
+.module-header-left{display:flex;align-items:center;gap:12px}
+.module-number{width:28px;height:28px;border-radius:50%;background:var(--ocean-100);color:var(--ocean-700);font-family:var(--font-display);font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.module-title{font-weight:600;font-size:.9375rem}
+.module-meta{font-size:.8125rem;color:var(--slate-400);display:flex;gap:12px}
+.module-lessons{background:#fff;border:1px solid var(--slate-200);border-top:none;border-radius:0 0 var(--radius-lg) var(--radius-lg)}
+.lesson{display:flex;align-items:center;gap:12px;padding:12px 20px 12px 56px;border-bottom:1px solid var(--slate-100);font-size:.875rem;cursor:pointer;transition:background var(--transition)}
+.lesson:hover{background:var(--ocean-50)}
+.lesson:last-child{border-bottom:none}
+.lesson-icon{width:20px;height:20px;flex-shrink:0}
+.lesson-icon.play{color:var(--ocean-500)}
+.lesson-icon.check{color:var(--success)}
+.lesson-icon.lock{color:var(--slate-300)}
+.lesson-title{flex:1;color:var(--slate-700)}
+.lesson.completed .lesson-title{color:var(--slate-400);text-decoration:line-through}
+.lesson-duration{font-size:.75rem;color:var(--slate-400);font-family:var(--font-display)}
+.lesson-preview{font-size:.6875rem;padding:2px 8px;border-radius:var(--radius-full);background:var(--sunset-50);color:var(--sunset-600);font-weight:600}
+
+/* ===== REVIEWS ===== */
+.review-card{padding:20px 0;border-bottom:1px solid var(--slate-100)}
+.review-card:last-child{border-bottom:none}
+.review-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.review-avatar{width:40px;height:40px;border-radius:50%;background:var(--ocean-100);display:flex;align-items:center;justify-content:center;font-size:.875rem;font-weight:600;color:var(--ocean-700)}
+.review-name{font-weight:600;font-size:.9375rem}
+.review-date{font-size:.75rem;color:var(--slate-400)}
+.review-stars{color:var(--warning);font-size:.875rem;margin-bottom:8px}
+.review-text{font-size:.9375rem;color:var(--slate-600);line-height:1.7}
+.review-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px;padding:20px;background:var(--ocean-50);border-radius:var(--radius-lg)}
+.review-summary-item{display:flex;align-items:center;gap:8px;font-size:.875rem}
+.review-summary-item .label{color:var(--slate-500)}
+.review-summary-item .value{font-weight:600;color:var(--slate-800)}
+
+/* ===== SIDEBAR ===== */
+.sidebar{position:sticky;top:88px}
+.sidebar-card{background:#fff;border-radius:var(--radius-xl);border:1px solid var(--slate-200);overflow:hidden;box-shadow:var(--shadow-sm)}
+.sidebar-price{padding:24px 24px 16px;border-bottom:1px solid var(--slate-100)}
+.price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.price-current{font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--ocean-700)}
+.price-original{font-size:1.0625rem;color:var(--slate-400);text-decoration:line-through}
+.price-discount{font-size:.8125rem;font-weight:600;color:var(--sunset-600);background:var(--sunset-50);padding:2px 8px;border-radius:var(--radius-full)}
+.sidebar-actions{padding:16px 24px;display:flex;flex-direction:column;gap:10px}
+.sidebar-features{padding:16px 24px;border-top:1px solid var(--slate-100)}
+.sidebar-feature{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:.875rem;color:var(--slate-600)}
+.sidebar-feature svg{width:18px;height:18px;color:var(--success);flex-shrink:0}
+.sidebar-instructor{padding:20px 24px;border-top:1px solid var(--slate-100)}
+.instructor-card{display:flex;gap:12px;align-items:center}
+.instructor-avatar-lg{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--ocean-200),var(--ocean-400));display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;color:var(--ocean-800)}
+.instructor-info{flex:1}
+.instructor-name{font-weight:600;font-size:.9375rem}
+.instructor-role{font-size:.8125rem;color:var(--slate-400)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1023px){
+  .detail-layout{grid-template-columns:1fr}
+  .sidebar{position:static}
+}
+@media(max-width:767px){
+  .course-badges{flex-wrap:wrap}
+  .course-meta-row{flex-direction:column;align-items:flex-start;gap:4px}
+  .review-summary{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 32 32" fill="none" width="28" height="28"><path d="M4 22c4-6 8 2 12-4s8-2 12 4" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M14 14l4-2v8" fill="currentColor"/></svg>
+      Surftorial
+    </a>
+    <div class="nav-links">
+      <a href="#">강좌</a>
+      <a href="#">내 학습</a>
+      <a href="#">커뮤니티</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="#">홈</a><span class="sep">›</span>
+    <a href="#">강좌 목록</a><span class="sep">›</span>
+    <span>서핑 첫걸음 — 바다 시작하기</span>
+  </div>
+
+  <!-- DETAIL LAYOUT -->
+  <div class="detail-layout">
+    <div class="main-content">
+
+      <!-- VIDEO PLAYER -->
+      <div class="video-section">
+        <div class="video-player">
+          <div class="video-play-center">
+            <svg viewBox="0 0 24 24" fill="white"><polygon points="8,5 20,12 8,19"/></svg>
+          </div>
+          <div class="video-overlay"></div>
+          <div class="video-controls">
+            <button class="video-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><polygon points="4,3 16,10 4,17"/></svg>
+            </button>
+            <div class="video-progress">
+              <div class="video-progress-fill"><div class="video-progress-handle"></div></div>
+            </div>
+            <span class="video-time">11:24 / 32:18</span>
+            <button class="video-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v4h4a1 1 0 110 2h-4v4a1 1 0 11-2 0v-4H5a1 1 0 110-2h4V4a1 1 0 011-1z"/></svg>
+            </button>
+            <button class="video-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4h2v12H3V4zm4 0h2v12H7V4zm4 2l6 4-6 4V6z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- COURSE INFO -->
+      <div class="course-header">
+        <div class="course-badges">
+          <span class="course-badge badge-level">입문</span>
+          <span class="course-badge badge-category">서핑 기초</span>
+          <span class="course-badge badge-hot">🔥 인기</span>
+        </div>
+        <h1 class="course-title">서핑 첫걸음 — 바다 시작하기</h1>
+        <div class="course-meta-row">
+          <span class="meta-item">📺 32강</span>
+          <span class="meta-item">⏱ 8시간</span>
+          <span class="meta-item"><span class="stars">★★★★★</span> 4.9</span>
+          <span class="meta-item">👥 1,248명 수강</span>
+          <span class="meta-item">업데이트 2026.05</span>
+        </div>
+        <p class="course-desc">처음 서핑을 접하는 분들을 위한 입문 강좌. 바다의 기본 지식부터 팝업, 균형 잡기까지 단계별로 배워요. 실전에 바로 적용할 수 있는 노하우를 전문 인스트럭터가 친절하게 안내합니다.</p>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs">
+        <div class="tab active">커리큘럼</div>
+        <div class="tab">리뷰</div>
+        <div class="tab">공지사항</div>
+      </div>
+
+      <!-- CURRICULUM TAB -->
+      <div class="curriculum-section active">
+        <!-- Module 1 -->
+        <div class="module">
+          <div class="module-header">
+            <div class="module-header-left">
+              <span class="module-number">1</span>
+              <span class="module-title">서핑 입문 — 바다와 친해지기</span>
+            </div>
+            <div class="module-meta">
+              <span>6강</span>
+              <span>1시간 30분</span>
+            </div>
+          </div>
+          <div class="module-lessons">
+            <div class="lesson completed">
+              <svg class="lesson-icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="lesson-title">서핑이란 무엇인가?</span>
+              <span class="lesson-duration">12:34</span>
+            </div>
+            <div class="lesson completed">
+              <svg class="lesson-icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="lesson-title">서핑 장비 이해하기</span>
+              <span class="lesson-duration">15:20</span>
+            </div>
+            <div class="lesson completed">
+              <svg class="lesson-icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="lesson-title">바다 안전 가이드</span>
+              <span class="lesson-duration">18:45</span>
+            </div>
+            <div class="lesson">
+              <svg class="lesson-icon play" viewBox="0 0 20 20" fill="currentColor"><polygon points="5,3 17,10 5,17"/></svg>
+              <span class="lesson-title">파도의 기본 원리</span>
+              <span class="lesson-duration">14:10</span>
+              <span class="lesson-preview">미리보기</span>
+            </div>
+            <div class="lesson">
+              <svg class="lesson-icon play" viewBox="0 0 20 20" fill="currentColor"><polygon points="5,3 17,10 5,17"/></svg>
+              <span class="lesson-title">웻슈트 착용법</span>
+              <span class="lesson-duration">10:30</span>
+            </div>
+            <div class="lesson">
+              <svg class="lesson-icon play" viewBox="0 0 20 20" fill="currentColor"><polygon points="5,3 17,10 5,17"/></svg>
+              <span class="lesson-title">보드 운반과 관리</span>
+              <span class="lesson-duration">11:20</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Module 2 -->
+        <div class="module">
+          <div class="module-header">
+            <div class="module-header-left">
+              <span class="module-number">2</span>
+              <span class="module-title">지상 연습 — 몸의 기억 만들기</span>
+            </div>
+            <div class="module-meta">
+              <span>8강</span>
+              <span>2시간</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Module 3 -->
+        <div class="module">
+          <div class="module-header">
+            <div class="module-header-left">
+              <span class="module-number">3</span>
+              <span class="module-title">물속 연습 — 팝업과 균형</span>
+            </div>
+            <div class="module-meta">
+              <span>10강</span>
+              <span>2시간 30분</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Module 4 -->
+        <div class="module">
+          <div class="module-header">
+            <div class="module-header-left">
+              <span class="module-number">4</span>
+              <span class="module-title">실전 응용 — 파도를 타다</span>
+            </div>
+            <div class="module-meta">
+              <span>8강</span>
+              <span>2시간</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEWS TAB (hidden by default) -->
+      <div class="curriculum-section" style="display:block">
+        <div class="review-summary">
+          <div class="review-summary-item"><span class="label">평균 별점</span><span class="value">★★★★★ 4.9</span></div>
+          <div class="review-summary-item"><span class="label">리뷰 수</span><span class="value">238개</span></div>
+          <div class="review-summary-item"><span class="label">만족도</span><span class="value">97%</span></div>
+          <div class="review-summary-item"><span class="label">완주율</span><span class="value">84%</span></div>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar">김</div>
+            <div>
+              <div class="review-name">김하늘</div>
+              <div class="review-date">2주 전</div>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">처음 서핑을 시작하면서 이 강좌를 수강했는데, 정말 도움이 되었습니다. 특히 바다 안전 가이드 파트가 인상 깊었어요. 지상 연습부터 차근차근 설명해주셔서 초보자도 따라하기 쉬웠습니다.</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar">이</div>
+            <div>
+              <div class="review-name">이서윤</div>
+              <div class="review-date">1개월 전</div>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">영상 화질도 좋고 설명도 알아듣기 쉬워요. 반복해서 볼 수 있어서 좋았습니다. 팝업 동작을 여러 각도에서 보여줘서 이해가 빨랐어요.</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar">박</div>
+            <div>
+              <div class="review-name">박민수</div>
+              <div class="review-date">2개월 전</div>
+            </div>
+          </div>
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">전반적으로 만족합니다. 다만 중급 턴 기술 강좌도 이 정도로 친절하게 설명해주면 좋겠어요.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-price">
+          <div class="price-row">
+            <span class="price-current">₩29,000</span>
+            <span class="price-original">₩49,000</span>
+            <span class="price-discount">41% 할인</span>
+          </div>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn btn-sunset" style="width:100%">수강 신청하기</button>
+          <button class="btn btn-outline" style="width:100%">🛍️ 장바구니 담기</button>
+          <button class="btn btn-outline btn-sm" style="width:100%">♡ 위시리스트</button>
+        </div>
+        <div class="sidebar-features">
+          <div class="sidebar-feature">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            32개 영상 강좌 (8시간)
+          </div>
+          <div class="sidebar-feature">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            모바일 시청 가능
+          </div>
+          <div class="sidebar-feature">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            오프라인 다운로드
+          </div>
+          <div class="sidebar-feature">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            수료증 발급
+          </div>
+          <div class="sidebar-feature">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            평생 접근
+          </div>
+        </div>
+        <div class="sidebar-instructor">
+          <div class="instructor-card">
+            <div class="instructor-avatar-lg">김</div>
+            <div class="instructor-info">
+              <div class="instructor-name">김지나 인스트럭터</div>
+              <div class="instructor-role">프로서퍼 · 10년 경력</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,282 @@
+@import "tailwindcss";
+
+:root {
+  /* Ocean Colors */
+  --ocean-50: #F0F9FF;
+  --ocean-100: #E0F2FE;
+  --ocean-200: #BAE6FD;
+  --ocean-300: #7DD3FC;
+  --ocean-400: #38BDF8;
+  --ocean-500: #0EA5E9;
+  --ocean-600: #0284C7;
+  --ocean-700: #0369A1;
+  --ocean-800: #075985;
+  --ocean-900: #0C4A6E;
+  --ocean-950: #082F49;
+
+  /* Sunset Colors */
+  --sunset-50: #FFF7ED;
+  --sunset-100: #FFEDD5;
+  --sunset-200: #FED7AA;
+  --sunset-300: #FDBA74;
+  --sunset-400: #FB923C;
+  --sunset-500: #F97316;
+  --sunset-600: #EA580C;
+  --sunset-700: #C2410C;
+
+  /* Slate Colors */
+  --slate-50: #F8FAFC;
+  --slate-100: #F1F5F9;
+  --slate-200: #E2E8F0;
+  --slate-300: #CBD5E1;
+  --slate-400: #94A3B8;
+  --slate-500: #64748B;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1E293B;
+  --slate-900: #0F172A;
+  --slate-950: #020617;
+
+  /* Semantic Colors */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --info: #0EA5E9;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+@theme inline {
+  --color-background: var(--slate-50);
+  --color-foreground: var(--slate-900);
+  
+  /* Ocean Colors */
+  --color-ocean-50: var(--ocean-50);
+  --color-ocean-100: var(--ocean-100);
+  --color-ocean-200: var(--ocean-200);
+  --color-ocean-300: var(--ocean-300);
+  --color-ocean-400: var(--ocean-400);
+  --color-ocean-500: var(--ocean-500);
+  --color-ocean-600: var(--ocean-600);
+  --color-ocean-700: var(--ocean-700);
+  --color-ocean-800: var(--ocean-800);
+  --color-ocean-900: var(--ocean-900);
+  --color-ocean-950: var(--ocean-950);
+
+  /* Sunset Colors */
+  --color-sunset-50: var(--sunset-50);
+  --color-sunset-100: var(--sunset-100);
+  --color-sunset-200: var(--sunset-200);
+  --color-sunset-300: var(--sunset-300);
+  --color-sunset-400: var(--sunset-400);
+  --color-sunset-500: var(--sunset-500);
+  --color-sunset-600: var(--sunset-600);
+  --color-sunset-700: var(--sunset-700);
+
+  /* Slate Colors */
+  --color-slate-50: var(--slate-50);
+  --color-slate-100: var(--slate-100);
+  --color-slate-200: var(--slate-200);
+  --color-slate-300: var(--slate-300);
+  --color-slate-400: var(--slate-400);
+  --color-slate-500: var(--slate-500);
+  --color-slate-600: var(--slate-600);
+  --color-slate-700: var(--slate-700);
+  --color-slate-800: var(--slate-800);
+  --color-slate-900: var(--slate-900);
+  --color-slate-950: var(--slate-950);
+
+  /* Semantic Colors */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  /* Fonts */
+  --font-sans: "Pretendard Variable", "Pretendard", system-ui, sans-serif;
+  --font-brand: "Inter", system-ui, sans-serif;
+
+  /* Custom utilities */
+  --duration-250: 250ms;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility Classes */
+.text-gradient {
+  background: linear-gradient(135deg, var(--ocean-400), var(--sunset-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.font-brand {
+  font-family: var(--font-brand);
+}
+
+.shadow-card {
+  box-shadow: var(--shadow-sm);
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shadow-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.card-shadow-md {
+  box-shadow: var(--shadow-md);
+}
+
+.card-shadow-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-shadow-xl {
+  box-shadow: var(--shadow-xl);
+}
+
+/* Responsive Grid */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 1023px) {
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Button Base Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--ocean-700);
+  color: #fff;
+  padding: 12px 24px;
+  font-size: 0.9375rem;
+}
+
+.btn-primary:hover {
+  background: var(--ocean-800);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-sunset {
+  background: var(--sunset-500);
+  color: #fff;
+  padding: 14px 28px;
+  font-size: 1rem;
+}
+
+.btn-sunset:hover {
+  background: var(--sunset-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--ocean-700);
+  color: var(--ocean-700);
+  padding: 10px 24px;
+  font-size: 0.9375rem;
+}
+
+.btn-outline:hover {
+  background: var(--ocean-700);
+  color: #fff;
+}
+
+.btn-lg {
+  padding: 16px 32px;
+  font-size: 1.0625rem;
+  border-radius: var(--radius-lg);
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.8125rem;
+}
+
+/* Card Styles */
+.card {
+  background: #fff;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--slate-200);
+  overflow: hidden;
+}
+
+/* Badge Styles */
+.badge {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-level {
+  background: var(--ocean-100);
+  color: var(--ocean-700);
+}
+
+.badge-hot {
+  background: var(--sunset-500);
+  color: #fff;
+}
+
+.badge-new {
+  background: var(--success);
+  color: #fff;
+}

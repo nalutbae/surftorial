@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surftorial — 강의 목록</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ocean-600: #0C4A6E; --ocean-500: #0369A1; --ocean-400: #0EA5E9; --ocean-300: #7DD3FC;
+    --sunset-500: #F97316; --sunset-400: #FB923C; --sunset-100: #FFF7ED;
+    --slate-900: #0F172A; --slate-700: #334155; --slate-400: #94A3B8; --slate-200: #E2E8F0;
+    --sand-50: #F8FAFC; --white: #FFFFFF;
+    --success: #10B981; --warning: #F59E0B; --error: #EF4444;
+    --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px; --radius-full: 9999px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--slate-900); background: var(--sand-50);
+    line-height: 1.7; -webkit-font-smoothing: antialiased;
+  }
+  .font-display { font-family: 'Inter', sans-serif; }
+
+  /* NAV */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--slate-200);
+    padding: 0 24px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--ocean-500); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-logo .logo-wave { width: 32px; height: 24px; background: var(--ocean-500); border-radius: 0 0 50% 50%; position: relative; overflow: hidden; }
+  .nav-logo .logo-wave::after { content: ''; position: absolute; top: 4px; left: 10px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--sunset-500); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: var(--slate-700); text-decoration: none; font-size: 0.9375rem; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--ocean-500); }
+  .nav-cta { background: var(--ocean-500); color: var(--white); padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9375rem; text-decoration: none; transition: background 0.2s; }
+  .nav-cta:hover { background: var(--ocean-400); }
+
+  /* LAYOUT */
+  .page-container { margin-top: 64px; display: flex; }
+  .sidebar {
+    width: 260px; background: var(--white); border-right: 1px solid var(--slate-200);
+    padding: 24px 20px; position: sticky; top: 64px; height: calc(100vh - 64px);
+    overflow-y: auto; flex-shrink: 0;
+  }
+  .main-content { flex: 1; padding: 32px 32px 64px; max-width: 960px; }
+
+  /* SIDEBAR */
+  .sidebar h3 { font-size: 0.75rem; font-weight: 600; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+  .filter-group { margin-bottom: 28px; }
+  .filter-group .filter-option {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: var(--radius-md);
+    cursor: pointer; transition: background 0.15s; font-size: 0.9375rem; color: var(--slate-700);
+  }
+  .filter-group .filter-option:hover { background: var(--sand-50); }
+  .filter-group .filter-option.active { background: rgba(3,105,161,0.08); color: var(--ocean-500); font-weight: 600; }
+  .filter-group .filter-option .count { margin-left: auto; font-size: 0.75rem; color: var(--slate-400); }
+  .filter-group .filter-option .checkbox {
+    width: 18px; height: 18px; border: 2px solid var(--slate-200); border-radius: 3px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .filter-group .filter-option.active .checkbox { border-color: var(--ocean-500); background: var(--ocean-500); }
+  .filter-group .filter-option.active .checkbox::after { content: '✓'; color: var(--white); font-size: 0.625rem; font-weight: 700; }
+
+  /* SEARCH & SORT */
+  .search-sort-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+  }
+  .search-box {
+    flex: 1; min-width: 200px; position: relative;
+  }
+  .search-box input {
+    width: 100%; padding: 12px 16px 12px 44px;
+    border: 1px solid var(--slate-200); border-radius: var(--radius-md);
+    font-size: 0.9375rem; font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--white);
+  }
+  .search-box input:focus { outline: none; border-color: var(--ocean-500); box-shadow: 0 0 0 3px rgba(3,105,161,0.1); }
+  .search-box .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--slate-400); }
+  .sort-dropdown {
+    padding: 12px 16px; border: 1px solid var(--slate-200); border-radius: var(--radius-md);
+    font-size: 0.9375rem; font-family: inherit; background: var(--white);
+    cursor: pointer; min-width: 140px;
+  }
+
+  /* BADGES */
+  .badge { display: inline-block; padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+  .badge-ocean { background: var(--ocean-300); color: var(--ocean-600); }
+  .badge-sunset { background: var(--sunset-100); color: var(--sunset-500); }
+  .badge-success { background: rgba(16,185,129,0.1); color: #059669; }
+
+  /* COURSE LIST */
+  .course-list { display: flex; flex-direction: column; gap: 16px; }
+  .course-item {
+    display: flex; background: var(--white); border-radius: var(--radius-lg);
+    overflow: hidden; box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s, transform 0.2s; cursor: pointer;
+    text-decoration: none; color: inherit;
+  }
+  .course-item:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .course-item-thumb {
+    width: 240px; min-height: 160px;
+    background: linear-gradient(135deg, var(--ocean-400), var(--ocean-300));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; flex-shrink: 0; position: relative;
+  }
+  .course-item-thumb .play-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.2);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .course-item:hover .play-overlay { opacity: 1; }
+  .play-icon-circle {
+    width: 44px; height: 44px; background: var(--white); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .play-icon-circle::after { content: ''; width: 0; height: 0; border-style: solid; border-width: 7px 0 7px 14px; border-color: transparent transparent transparent var(--ocean-500); margin-left: 3px; }
+  .course-item-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+  .course-item-body .badges { display: flex; gap: 8px; margin-bottom: 8px; }
+  .course-item-body h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: 6px; line-height: 1.4; }
+  .course-item-body .desc { font-size: 0.875rem; color: var(--slate-700); line-height: 1.6; margin-bottom: 12px; flex: 1; }
+  .course-item-meta { display: flex; justify-content: space-between; align-items: center; }
+  .course-item-meta .meta-left { display: flex; gap: 16px; font-size: 0.8125rem; color: var(--slate-400); }
+  .course-price { font-family: 'Inter', sans-serif; font-weight: 700; color: var(--sunset-500); font-size: 1.0625rem; }
+  .course-price .original { text-decoration: line-through; color: var(--slate-400); font-weight: 400; font-size: 0.875rem; margin-right: 6px; }
+
+  /* PAGINATION */
+  .pagination {
+    display: flex; justify-content: center; gap: 8px; margin-top: 32px;
+  }
+  .pagination a, .pagination span {
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: var(--radius-md);
+    font-size: 0.9375rem; text-decoration: none; color: var(--slate-700);
+    transition: background 0.15s;
+  }
+  .pagination a:hover { background: var(--slate-200); }
+  .pagination .active { background: var(--ocean-500); color: var(--white); font-weight: 600; }
+
+  /* RESPONSIVE */
+  @media (max-width: 767px) {
+    .sidebar { display: none; }
+    .page-container { flex-direction: column; }
+    .main-content { padding: 20px 16px 48px; }
+    .course-item { flex-direction: column; }
+    .course-item-thumb { width: 100%; min-height: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="landing.html" class="nav-logo"><span class="logo-wave"></span> Surftorial</a>
+  <div class="nav-links">
+    <a href="#" class="active">강의</a>
+    <a href="#">커뮤니티</a>
+    <a href="#">내 학습</a>
+    <a href="#">로그인</a>
+  </div>
+</nav>
+
+<div class="page-container">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="filter-group">
+      <h3>레벨</h3>
+      <div class="filter-option active"><span class="checkbox"></span> 전체 <span class="count">25</span></div>
+      <div class="filter-option"><span class="checkbox"></span> 입문 <span class="count">8</span></div>
+      <div class="filter-option"><span class="checkbox"></span> 초급 <span class="count">9</span></div>
+      <div class="filter-option"><span class="checkbox"></span> 중급 <span class="count">5</span></div>
+      <div class="filter-option"><span class="checkbox"></span> 고급 <span class="count">3</span></div>
+    </div>
+    <div class="filter-group">
+      <h3>카테고리</h3>
+      <div class="filter-option"><span class="checkbox"></span> 기초 이론 <span class="count">10</span></div>
+      <div class="filter-option"><span class="checkbox"></span> 팝업 & 테이크오프 <span class="count">6</span></div>
+      <div class="filter-option"><span class="checkbox"></span> 턴 & 가니 <span class="count">5</span></div>
+      <div class="filter-option"><span class="checkbox"></span> 안전 & 에티켓 <span class="count">4</span></div>
+    </div>
+    <div class="filter-group">
+      <h3>가격</h3>
+      <div class="filter-option"><span class="checkbox"></span> 무료 <span class="count">3</span></div>
+      <div class="filter-option"><span class="checkbox"></span> ₩30,000 이하 <span class="count">12</span></div>
+      <div class="filter-option"><span class="checkbox"></span> ₩30,000~50,000 <span class="count">7</span></div>
+      <div class="filter-option"><span class="checkbox"></span> ₩50,000 이상 <span class="count">3</span></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <h1 style="font-family:'Inter',sans-serif; font-size:1.875rem; font-weight:700; margin-bottom:8px;">강의 목록</h1>
+    <p style="color:var(--slate-700); margin-bottom:24px;">체계적인 서핑 커리큘럼, 당신의 레벨에 맞는 강의를 찾아보세요</p>
+
+    <div class="search-sort-bar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="강의명, 인스트럭터 검색...">
+      </div>
+      <select class="sort-dropdown">
+        <option>인기순</option>
+        <option>최신순</option>
+        <option>가격 낮은순</option>
+        <option>가격 높은순</option>
+        <option>평점순</option>
+      </select>
+    </div>
+
+    <div class="course-list">
+      <a href="course-detail.html" class="course-item">
+        <div class="course-item-thumb">🌊<div class="play-overlay"><div class="play-icon-circle"></div></div></div>
+        <div class="course-item-body">
+          <div class="badges"><span class="badge badge-ocean">입문</span><span class="badge badge-success">무료 미리보기</span></div>
+          <h3>서핑 입문: 바다와 친해지기</h3>
+          <div class="desc">서핑을 처음 시작하는 분들을 위한 기초 과정. 파도의 원리, 안전 수칙, 보드 다루기부터 팝업의 기본까지 단계별로 배워요.</div>
+          <div class="course-item-meta">
+            <div class="meta-left">
+              <span>🎬 18강</span>
+              <span>⏱ 6시간</span>
+              <span>⭐ 4.9 (342)</span>
+            </div>
+            <div class="course-price">₩29,000</div>
+          </div>
+        </div>
+      </a>
+      <a href="course-detail.html" class="course-item">
+        <div class="course-item-thumb" style="background:linear-gradient(135deg,#0369A1,#0EA5E9);">🏄<div class="play-overlay"><div class="play-icon-circle"></div></div></div>
+        <div class="course-item-body">
+          <div class="badges"><span class="badge badge-ocean">초급</span></div>
+          <h3>팝업 마스터: 보드 위에 서는 법</h3>
+          <div class="desc">테이크오프의 모든 것. 라잉 포지션부터 스탠딩까지, 슬로우 모션 분석과 반복 연습으로 완벽한 팝업을 만들어요.</div>
+          <div class="course-item-meta">
+            <div class="meta-left">
+              <span>🎬 24강</span>
+              <span>⏱ 8시간</span>
+              <span>⭐ 4.8 (218)</span>
+            </div>
+            <div class="course-price"><span class="original">₩49,000</span>₩39,000</div>
+          </div>
+        </div>
+      </a>
+      <a href="course-detail.html" class="course-item">
+        <div class="course-item-thumb" style="background:linear-gradient(135deg,#0C4A6E,#0369A1);">🌅<div class="play-overlay"><div class="play-icon-circle"></div></div></div>
+        <div class="course-item-body">
+          <div class="badges"><span class="badge badge-sunset">중급</span></div>
+          <h3>턴 기술: 파도를 가르며 나아가기</h3>
+          <div class="desc">보텀턴과 오프더립의 차이, 프론트사이드와 백사이드 턴, 컷백의 타이밍까지. 중급 서퍼를 위한 턴 마스터리.</div>
+          <div class="course-item-meta">
+            <div class="meta-left">
+              <span>🎬 32강</span>
+              <span>⏱ 10시간</span>
+              <span>⭐ 4.9 (156)</span>
+            </div>
+            <div class="course-price">₩49,000</div>
+          </div>
+        </div>
+      </a>
+      <a href="course-detail.html" class="course-item">
+        <div class="course-item-thumb" style="background:linear-gradient(135deg,#F97316,#FB923C);">🏆<div class="play-overlay"><div class="play-icon-circle"></div></div></div>
+        <div class="course-item-body">
+          <div class="badges"><span class="badge badge-sunset">고급</span></div>
+          <h3>컷백 & 리버스: 고급 테크닉</h3>
+          <div class="desc">급격한 방향 전환, 공중 동작의 기본기, 리버스 360의 입문. 중급 이상 서퍼를 위한 고급 테크닉 집중 과정.</div>
+          <div class="course-item-meta">
+            <div class="meta-left">
+              <span>🎬 28강</span>
+              <span>⏱ 9시간</span>
+              <span>⭐ 4.7 (89)</span>
+            </div>
+            <div class="course-price">₩59,000</div>
+          </div>
+        </div>
+      </a>
+      <a href="course-detail.html" class="course-item">
+        <div class="course-item-thumb" style="background:linear-gradient(135deg,#10B981,#34D399);">🛡️<div class="play-overlay"><div class="play-icon-circle"></div></div></div>
+        <div class="course-item-body">
+          <div class="badges"><span class="badge badge-ocean">입문</span><span class="badge badge-success">무료</span></div>
+          <h3>서핑 안전: 바다에서 나를 지키는 법</h3>
+          <div class="desc">조류 파악, 리프 체크, 응급처치까지. 서핑 전 필수 안전 교육을 무료로 제공합니다.</div>
+          <div class="course-item-meta">
+            <div class="meta-left">
+              <span>🎬 8강</span>
+              <span>⏱ 2시간</span>
+              <span>⭐ 4.9 (512)</span>
+            </div>
+            <div class="course-price" style="color:var(--success);">무료</div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+      <span class="active">1</span>
+      <a href="#">2</a>
+      <a href="#">3</a>
+      <a href="#">다음 →</a>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

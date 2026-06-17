@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surftorial — 강의 상세</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ocean-600: #0C4A6E; --ocean-500: #0369A1; --ocean-400: #0EA5E9; --ocean-300: #7DD3FC;
+    --sunset-500: #F97316; --sunset-400: #FB923C; --sunset-100: #FFF7ED;
+    --slate-900: #0F172A; --slate-700: #334155; --slate-400: #94A3B8; --slate-200: #E2E8F0;
+    --sand-50: #F8FAFC; --white: #FFFFFF;
+    --success: #10B981; --warning: #F59E0B; --error: #EF4444;
+    --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-full: 9999px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--slate-900); background: var(--sand-50);
+    line-height: 1.7; -webkit-font-smoothing: antialiased;
+  }
+  .font-display { font-family: 'Inter', sans-serif; }
+
+  /* NAV */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--slate-200);
+    padding: 0 24px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--ocean-500); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-logo .logo-wave { width: 32px; height: 24px; background: var(--ocean-500); border-radius: 0 0 50% 50%; position: relative; overflow: hidden; }
+  .nav-logo .logo-wave::after { content: ''; position: absolute; top: 4px; left: 10px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--sunset-500); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: var(--slate-700); text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
+
+  /* BREADCRUMB */
+  .breadcrumb {
+    max-width: 1200px; margin: 80px auto 0; padding: 16px 24px;
+    font-size: 0.875rem; color: var(--slate-400);
+  }
+  .breadcrumb a { color: var(--ocean-500); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { margin: 0 8px; }
+
+  /* LAYOUT */
+  .detail-layout {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px 64px;
+    display: grid; grid-template-columns: 1fr 360px; gap: 32px;
+  }
+
+  /* VIDEO PLAYER */
+  .video-player {
+    width: 100%; aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--ocean-600), var(--ocean-400));
+    border-radius: var(--radius-lg);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; cursor: pointer;
+    margin-bottom: 24px;
+  }
+  .video-player .play-btn {
+    width: 72px; height: 72px; background: rgba(255,255,255,0.95); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
+  }
+  .video-player:hover .play-btn { transform: scale(1.05); }
+  .play-btn::after { content: ''; width: 0; height: 0; border-style: solid; border-width: 14px 0 14px 24px; border-color: transparent transparent transparent var(--ocean-500); margin-left: 5px; }
+  .video-player .preview-label {
+    position: absolute; bottom: 16px; left: 16px;
+    background: rgba(0,0,0,0.6); color: var(--white);
+    padding: 6px 12px; border-radius: var(--radius-sm);
+    font-size: 0.8125rem; font-weight: 500;
+  }
+
+  /* COURSE INFO */
+  .course-info h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.875rem; font-weight: 700;
+    line-height: 1.3; margin-bottom: 12px;
+  }
+  .course-info .badges { display: flex; gap: 8px; margin-bottom: 16px; }
+  .badge { display: inline-block; padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+  .badge-ocean { background: var(--ocean-300); color: var(--ocean-600); }
+  .badge-sunset { background: var(--sunset-100); color: var(--sunset-500); }
+  .badge-success { background: rgba(16,185,129,0.1); color: #059669; }
+  .course-stats {
+    display: flex; gap: 24px; margin-bottom: 20px;
+    font-size: 0.9375rem; color: var(--slate-700);
+  }
+  .course-stats span { display: flex; align-items: center; gap: 4px; }
+  .course-desc {
+    font-size: 1rem; color: var(--slate-700); line-height: 1.8;
+    margin-bottom: 32px;
+  }
+
+  /* INSTRUCTOR */
+  .instructor-card {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px; background: var(--white);
+    border-radius: var(--radius-lg); border: 1px solid var(--slate-200);
+    margin-bottom: 32px;
+  }
+  .instructor-avatar {
+    width: 56px; height: 56px; background: var(--ocean-300);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0;
+  }
+  .instructor-info h4 { font-size: 1rem; font-weight: 600; }
+  .instructor-info p { font-size: 0.875rem; color: var(--slate-700); }
+  .instructor-info .rating { color: var(--warning); font-size: 0.875rem; }
+
+  /* CURRICULUM */
+  .curriculum { margin-bottom: 32px; }
+  .curriculum h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; }
+  .curriculum-section { margin-bottom: 16px; }
+  .curriculum-section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px; background: var(--white);
+    border: 1px solid var(--slate-200); border-radius: var(--radius-md);
+    cursor: pointer; font-weight: 600; font-size: 0.9375rem;
+  }
+  .curriculum-section-header:hover { border-color: var(--ocean-300); }
+  .curriculum-section-header .meta { font-weight: 400; color: var(--slate-400); font-size: 0.8125rem; }
+  .lesson-list { list-style: none; border: 1px solid var(--slate-200); border-top: 0; border-radius: 0 0 var(--radius-md) var(--radius-md); }
+  .lesson-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-bottom: 1px solid var(--slate-200);
+    font-size: 0.9375rem; cursor: pointer; transition: background 0.15s;
+  }
+  .lesson-item:last-child { border-bottom: 0; }
+  .lesson-item:hover { background: var(--sand-50); }
+  .lesson-item .lesson-num { color: var(--slate-400); font-size: 0.8125rem; min-width: 28px; }
+  .lesson-item .lesson-title { flex: 1; }
+  .lesson-item .lesson-duration { color: var(--slate-400); font-size: 0.8125rem; }
+  .lesson-item .lesson-icon { font-size: 0.875rem; }
+  .lesson-item.locked { opacity: 0.6; }
+
+  /* SIDEBAR */
+  .sidebar-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md); padding: 28px;
+    position: sticky; top: 80px;
+  }
+  .sidebar-price {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    color: var(--slate-900); margin-bottom: 4px;
+  }
+  .sidebar-price .original {
+    text-decoration: line-through; color: var(--slate-400);
+    font-weight: 400; font-size: 1rem; margin-left: 8px;
+  }
+  .sidebar-discount { font-size: 0.875rem; color: var(--sunset-500); font-weight: 600; margin-bottom: 20px; }
+  .btn-cta {
+    display: block; width: 100%; text-align: center;
+    background: var(--sunset-500); color: var(--white);
+    padding: 16px; border-radius: var(--radius-md);
+    font-weight: 700; font-size: 1.0625rem; text-decoration: none;
+    transition: background 0.2s; border: none; cursor: pointer;
+    min-height: 48px; margin-bottom: 12px;
+  }
+  .btn-cta:hover { background: var(--sunset-400); }
+  .btn-secondary {
+    display: block; width: 100%; text-align: center;
+    background: var(--white); color: var(--ocean-500);
+    padding: 14px; border-radius: var(--radius-md);
+    font-weight: 600; font-size: 0.9375rem; text-decoration: none;
+    border: 2px solid var(--ocean-500);
+    transition: background 0.2s; margin-bottom: 24px;
+  }
+  .btn-secondary:hover { background: rgba(3,105,161,0.05); }
+  .sidebar-features { list-style: none; }
+  .sidebar-features li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 0.9375rem; color: var(--slate-700);
+    padding: 8px 0; border-bottom: 1px solid var(--slate-200);
+  }
+  .sidebar-features li:last-child { border-bottom: 0; }
+  .sidebar-features .check { color: var(--success); font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+  /* Q&A SECTION */
+  .qa-section { margin-top: 32px; }
+  .qa-section h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; }
+  .qa-item { background: var(--white); border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; }
+  .qa-question { font-weight: 600; font-size: 0.9375rem; margin-bottom: 8px; display: flex; gap: 8px; }
+  .qa-question .q-badge { color: var(--ocean-500); flex-shrink: 0; }
+  .qa-answer { font-size: 0.875rem; color: var(--slate-700); padding-left: 24px; line-height: 1.7; }
+
+  /* RESPONSIVE */
+  @media (max-width: 767px) {
+    .detail-layout { grid-template-columns: 1fr; }
+    .sidebar-card { position: static; }
+    .course-info h1 { font-size: 1.5rem; }
+    .course-stats { flex-wrap: wrap; gap: 12px; }
+    .breadcrumb { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="landing.html" class="nav-logo"><span class="logo-wave"></span> Surftorial</a>
+  <div class="nav-links">
+    <a href="course-list.html">강의</a>
+    <a href="#">커뮤니티</a>
+    <a href="#">내 학습</a>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="#">강의</a> <span>›</span> <a href="#">초급</a> <span>›</span> 팝업 마스터: 보드 위에 서는 법
+</div>
+
+<div class="detail-layout">
+  <div class="course-info">
+    <!-- VIDEO PLAYER -->
+    <div class="video-player">
+      <div class="play-btn"></div>
+      <div class="preview-label">▶ 미리보기 재생</div>
+    </div>
+
+    <!-- COURSE HEADER -->
+    <h1>팝업 마스터: 보드 위에 서는 법</h1>
+    <div class="badges">
+      <span class="badge badge-ocean">초급</span>
+      <span class="badge badge-success">무료 미리보기 3강</span>
+    </div>
+    <div class="course-stats">
+      <span>⭐ 4.8 (218)</span>
+      <span>🎬 24강</span>
+      <span>⏱ 8시간</span>
+      <span>👨‍🏫 김태우 인스트럭터</span>
+      <span>📅 최종 업데이트 2025.05</span>
+    </div>
+    <p class="course-desc">
+      테이크오프의 모든 것을 다룹니다. 라잉 포지션에서 스탠딩까지, 
+      슬로우 모션 분석과 반복 연습으로 완벽한 팝업을 만들어가는 과정입니다. 
+      파도를 잡는 타이밍, 보드 위에서의 균형, 그리고 안전한 착지까지 
+      단계별로 꼼꼼하게 설명합니다.
+    </p>
+
+    <!-- INSTRUCTOR -->
+    <div class="instructor-card">
+      <div class="instructor-avatar">🧑‍🏫</div>
+      <div class="instructor-info">
+        <h4>김태우 인스트럭터</h4>
+        <p>양양 서핑 스쿨 수석 코치 · ISA Level 2 자격증</p>
+        <div class="rating">⭐ 4.9 · 12개 강의 · 1,200+ 수강생</div>
+      </div>
+    </div>
+
+    <!-- CURRICULUM -->
+    <div class="curriculum">
+      <h2>📋 커리큘럼</h2>
+      <div class="curriculum-section">
+        <div class="curriculum-section-header">
+          <span>섹션 1: 팝업 기초</span>
+          <span class="meta">6강 · 2시간</span>
+        </div>
+        <ul class="lesson-list">
+          <li class="lesson-item"><span class="lesson-num">01</span><span class="lesson-icon">▶</span><span class="lesson-title">강의 소개 및 준비물</span><span class="lesson-duration">8:24</span></li>
+          <li class="lesson-item"><span class="lesson-num">02</span><span class="lesson-icon">▶</span><span class="lesson-title">보드 위에서의 올바른 자세</span><span class="lesson-duration">12:15</span></li>
+          <li class="lesson-item"><span class="lesson-num">03</span><span class="lesson-icon">▶</span><span class="lesson-title">팝업 동작 분해 — 슬로우 모션</span><span class="lesson-duration">15:42</span></li>
+          <li class="lesson-item locked"><span class="lesson-num">04</span><span class="lesson-icon">🔒</span><span class="lesson-title">육상 연습: 팝업 드릴 3가지</span><span class="lesson-duration">11:08</span></li>
+          <li class="lesson-item locked"><span class="lesson-num">05</span><span class="lesson-icon">🔒</span><span class="lesson-title">파도 포착 타이밍</span><span class="lesson-duration">13:30</span></li>
+          <li class="lesson-item locked"><span class="lesson-num">06</span><span class="lesson-icon">🔒</span><span class="lesson-title">실전 팝업: 처음부터 끝까지</span><span class="lesson-duration">18:05</span></li>
+        </ul>
+      </div>
+      <div class="curriculum-section">
+        <div class="curriculum-section-header">
+          <span>섹션 2: 안정화와 밸런스</span>
+          <span class="meta">6강 · 2시간</span>
+        </div>
+        <ul class="lesson-list">
+          <li class="lesson-item locked"><span class="lesson-num">07</span><span class="lesson-icon">🔒</span><span class="lesson-title">스탠스: 레귤러 vs 구피</span><span class="lesson-duration">9:45</span></li>
+          <li class="lesson-item locked"><span class="lesson-num">08</span><span class="lesson-icon">🔒</span><span class="lesson-title">무게 중심 이동의 기본</span><span class="lesson-duration">14:20</span></li>
+        </ul>
+      </div>
+      <div class="curriculum-section">
+        <div class="curriculum-section-header">
+          <span>섹션 3: 실전 응용</span>
+          <span class="meta">6강 · 2시간</span>
+        </div>
+        <ul class="lesson-list">
+          <li class="lesson-item locked"><span class="lesson-num">13</span><span class="lesson-icon">🔒</span><span class="lesson-title">작은 파도에서의 테이크오프</span><span class="lesson-duration">16:50</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q&A -->
+    <div class="qa-section">
+      <h2>💬 자주 묻는 질문</h2>
+      <div class="qa-item">
+        <div class="qa-question"><span class="q-badge">Q.</span> 서핑 경험이 전혀 없어도 들을 수 있나요?</div>
+        <div class="qa-answer">네, 이 강의는 완전 초보자도 들을 수 있도록 구성되어 있습니다. 기본적인 수영 능력만 있으면 충분합니다.</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-question"><span class="q-badge">Q.</span> 수강 기간은 어떻게 되나요?</div>
+        <div class="qa-answer">결제 후 1년간 무제한 재시청이 가능합니다. 기간 연장도 가능합니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-card">
+    <div class="sidebar-price">₩39,000 <span class="original">₩49,000</span></div>
+    <div class="sidebar-discount">🔥 20% 할인 — 창업 특가</div>
+    <a href="#" class="btn-cta">🏄 수강 신청하기</a>
+    <a href="#" class="btn-secondary">▶ 무료 미리보기 3강</a>
+    <ul class="sidebar-features">
+      <li><span class="check">✓</span> 24개 강의 · 총 8시간</li>
+      <li><span class="check">✓</span> 1년간 무제한 재시청</li>
+      <li><span class="check">✓</span> 강의별 Q&A 지원</li>
+      <li><span class="check">✓</span> 모바일/태블릿 지원</li>
+      <li><span class="check">✓</span> 수료증 발급</li>
+      <li><span class="check">✓</span> 30일 환불 보장</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>
