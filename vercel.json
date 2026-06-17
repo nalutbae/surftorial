@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd tech && pnpm install && pnpm exec prisma generate && pnpm build",
+  "buildCommand": "cd tech && npm install && npx prisma generate && npm run build",
   "outputDirectory": "tech/.next",
-  "installCommand": "cd tech && corepack prepare pnpm@11.7.0 --activate && pnpm install",
+  "installCommand": "cd tech && npm install",
   "framework": "nextjs"
 }
